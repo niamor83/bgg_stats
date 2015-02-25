@@ -43,27 +43,16 @@ namespace BGGStats.Model
             play.BGGId = xmlPlay.TextAttribute("id");  
             play.Game = xmlPlay.SelectSingleNode("item").Attributes["name"].InnerText;            
 
-            string ratingStr;
-            int rating;
-            string name;
-            string username;
+
             bool hasAtLeastOnePlayer = false;
 
-            foreach (XmlNode players in xmlPlay.SelectNodes("players/player"))
+            foreach (XmlNode playerOrTeam in xmlPlay.SelectNodes("players/player"))
             {
-                ratingStr = players.TextAttribute("rating");
-                rating = Int32.TryParse(ratingStr, out rating) ? rating : -1;
-
-                //Means he wins!
-                if (players.TextAttribute("win") == "1") 
-                rating = 1;
-
-                name = players.TextAttribute("name"); 
-                username = players.TextAttribute("username"); 
-
-                play.Result.Add(new Play.RatingPlayer() { Rating = rating, Player = new Player() { Nickname = name, Username = username } });
-
-                hasAtLeastOnePlayer = true;
+                //Manage team separated by "/" (e.g. Cooperative games or "Team games" -> Time's up)
+                foreach (string playerName in playerOrTeam.TextAttribute("name").Split('/'))
+                {
+                    hasAtLeastOnePlayer = LoadPlayer(playerOrTeam, play, playerName);
+                }                                
             }
 
             //If empty, the current game has to be added in the total of the player
@@ -80,7 +69,28 @@ namespace BGGStats.Model
             AllPlays.Clear();
         }
 
+        private bool LoadPlayer(XmlNode players, Play play, string playerName)
+        {
+            string ratingStr;
+            int rating;
+            string name;
+            string username;
+            
+            ratingStr = players.TextAttribute("rating");
+            rating = Int32.TryParse(ratingStr, out rating) ? rating : -1;
 
+            //Means he wins => rating = 1
+            if (players.TextAttribute("win") == "1")
+                rating = 1;
+
+            name = playerName.Trim();
+            username = players.TextAttribute("username");
+
+            play.Result.Add(new Play.RatingPlayer() { Rating = rating, Player = new Player() { Nickname = name, Username = username } });
+
+            //return true means that at least one player exists!
+            return true;
+        }
 
     }
 }

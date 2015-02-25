@@ -11,7 +11,7 @@ namespace BGGStats.Helper
     {
         public static string TextAttribute(this XmlNode node, string attribute)
         {
-            return node.Attributes[attribute] != null ? node.Attributes[attribute].InnerText : null;
+            return node.Attributes[attribute] != null ? node.Attributes[attribute].InnerText.Trim() : null;
         }
     }
 }
