@@ -26,6 +26,7 @@ namespace BGGStats
     public partial class MainWindow : Window
     {
         Plays BGGPlays = new Plays();
+        CalculateStats calcStats;
 
         public MainWindow()
         {
@@ -66,7 +67,7 @@ namespace BGGStats
 
             //Calculate all Stats
             //TODO : Static class or singleton 
-            CalculateStats calcStats = new CalculateStats(BGGPlays);
+            calcStats = new CalculateStats(BGGPlays);
             lstPlayers.ItemsSource = calcStats.Stats.Select( s => s.Player.Nickname);
             //lstPlayers.DisplayMemberPath = "Player.Nickname";
             Resources["Stats"] = calcStats.Stats;
@@ -91,6 +92,11 @@ namespace BGGStats
         {
             if(lstPlayerGames.SelectedItem != null)
             Resources["PlayerResults"] = BGGPlays.AllPlays.Single(p => p.Id == ((Play)lstPlayerGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            chartPositionRating.ItemsSource = calcStats.Stats.Single(s => s.Player.Nickname == (((Stats)lstStatsPlayers.SelectedItem)).Player.Nickname).PositionRating;
         }
 
     }

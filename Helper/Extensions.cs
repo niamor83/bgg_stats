@@ -13,5 +13,18 @@ namespace BGGStats.Helper
         {
             return node.Attributes[attribute] != null ? node.Attributes[attribute].InnerText.Trim() : null;
         }
+
+        public static List<KeyValuePair<TKey, TValue>> AddOrUpdate<TKey, TValue>(this List<KeyValuePair<TKey, TValue>> dictionary, TKey key, TValue value)
+        {
+            if (dictionary.Exists(k => k.Key.Equals(key)))
+            {
+                //Assume that there is only on entry...
+                dictionary.Remove(dictionary.Single(k => k.Key.Equals(key)));
+            }
+            dictionary.Add(new KeyValuePair<TKey, TValue>(key, value));
+
+            return dictionary;
+
+        }
     }
 }

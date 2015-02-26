@@ -1,23 +1,24 @@
-﻿<Window x:Class="BGGStats.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="643" Width="1071">
+        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" x:Class="BGGStats.MainWindow"
+        Title="BGG - Stats" Height="900" Width="1500">
     <Grid Margin="0,0,2,1">
-        <Button x:Name="btnImport" Content="Import" HorizontalAlignment="Left" Margin="943,567,0,0" VerticalAlignment="Top" Width="75" Click="btnImport_Click"/>
-        <TabControl HorizontalAlignment="Left" Height="550" Margin="10,10,0,0" VerticalAlignment="Top" Width="1008">
+        <Button x:Name="btnImport" Content="Import" HorizontalAlignment="Left" Margin="1385,838,0,0" VerticalAlignment="Top" Width="75" Click="btnImport_Click"/>
+        <TabControl HorizontalAlignment="Left" Height="800" Margin="10,10,0,0" VerticalAlignment="Top" Width="1450">
             <TabItem x:Name="tabDetails" Header="Details">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
 
-                    <ListBox x:Name="lstGames" HorizontalAlignment="Left" Height="374" Margin="10,16,0,0" VerticalAlignment="Top" Width="224" SelectionChanged="lstGames_SelectionChanged"/>
-                    <ListView x:Name="lstResult" HorizontalAlignment="Left" Height="374" Margin="267,16,0,0" VerticalAlignment="Top" Width="343" ItemsSource="{DynamicResource Results}">
+                    <ListBox x:Name="lstGames" HorizontalAlignment="Left" Height="719" Margin="10,16,0,0" VerticalAlignment="Top" Width="224" SelectionChanged="lstGames_SelectionChanged"/>
+                    <ListView x:Name="lstResult" HorizontalAlignment="Left" Height="719" Margin="267,16,0,0" VerticalAlignment="Top" Width="343" ItemsSource="{DynamicResource Results}">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Rating"
-                            DisplayMemberBinding="{Binding Rating}" />
+									DisplayMemberBinding="{Binding Rating}" />
                                 <GridViewColumn Header="Nickname"
-                            DisplayMemberBinding="{Binding Player.Nickname}" />
+									DisplayMemberBinding="{Binding Player.Nickname}" />
                                 <GridViewColumn Header="Username"
-                            DisplayMemberBinding="{Binding Player.Username}" />
+									DisplayMemberBinding="{Binding Player.Username}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -25,19 +26,39 @@
             </TabItem>
             <TabItem x:Name="tabStats" Header="Stats">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,-61">
-                    <ListView HorizontalAlignment="Left" Height="419" Margin="10,10,0,0" VerticalAlignment="Top" Width="317" ItemsSource="{DynamicResource Stats}">
+                    <ListView x:Name="lstStatsPlayers" HorizontalAlignment="Left" Height="711" Margin="10,10,0,0" VerticalAlignment="Top" Width="836" ItemsSource="{DynamicResource Stats}" SelectionChanged="ListView_SelectionChanged">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Player" DisplayMemberBinding="{Binding Player.Nickname}"/>
-                                <GridViewColumn Header="Total Plays" DisplayMemberBinding="{Binding NbPlays}"/>
-                                <GridViewColumn Header="First" DisplayMemberBinding="{Binding NbFirst}"/>
-                                <GridViewColumn Header="Percent" DisplayMemberBinding="{Binding NbFirstPercent, StringFormat=P0}"/>
+                                <GridViewColumn Header="Player" Width="250" DisplayMemberBinding="{Binding Player.Nickname}"/>
+                                <GridViewColumn Header="Total Plays" Width="80" DisplayMemberBinding="{Binding NbPlays}"/>
+                                <GridViewColumn Header="1st" Width="50" DisplayMemberBinding="{Binding NbFirst}"/>
+                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbFirstPercent, StringFormat=P0}"/>
+                                <GridViewColumn Header="2nd" Width="50" DisplayMemberBinding="{Binding NbSecond}"/>
+                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbSecondPercent, StringFormat=P0}"/>
+                                <GridViewColumn Header="3rd" Width="50" DisplayMemberBinding="{Binding NbThird}"/>
+                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbThirdPercent, StringFormat=P0}"/>
+                                <GridViewColumn Header="4th" Width="50" DisplayMemberBinding="{Binding NbFourth}"/>
+                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbFourthpercent, StringFormat=P0}"/>
+                                <GridViewColumn Header="5th" Width="50" DisplayMemberBinding="{Binding NbFifth}"/>
+                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbFifthPercent, StringFormat=P0}"/>
+                                <GridViewColumn Header="6th" Width="50" DisplayMemberBinding="{Binding NbSixth}"/>
+                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbSixthPercent, StringFormat=P0}"/>
+                                <GridViewColumn Header="7th" Width="50" DisplayMemberBinding="{Binding NbSeventh}"/>
+                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbSeventhPercent, StringFormat=P0}"/>
+                                <GridViewColumn Header="8th" Width="50" DisplayMemberBinding="{Binding NbEigth}"/>
+                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbEigthPercent, StringFormat=P0}"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
 
-                    <Label Content="Total des parties : " Margin="30,472,860,79"/>
-                    <Label x:Name="lblTotalPlays" Content="" Width="100" Margin="147,472,755,81" FontWeight="Bold"/>
+                    <Label Content="Total plays : " Margin="30,726,860,79"/>
+                    <Label x:Name="lblTotalPlays" Content="" Width="100" Margin="129,728,1215,79" FontWeight="Bold"/>
+                    <chartingToolkit:Chart  Name="pieChart" Title="" 
+		VerticalAlignment="Top" Margin="884,39,43,0" Height="474">
+                        <chartingToolkit:PieSeries x:Name="chartPositionRating" DependentValuePath="Value" 
+		IndependentValuePath="Key" 
+		IsSelectionEnabled="True" />
+                    </chartingToolkit:Chart>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabByPlayer" Header="Players">
@@ -48,16 +69,16 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Rating"
-                            DisplayMemberBinding="{Binding Rating}" />
+									DisplayMemberBinding="{Binding Rating}" />
                                 <GridViewColumn Header="Nickname"
-                            DisplayMemberBinding="{Binding Player.Nickname}" />
+									DisplayMemberBinding="{Binding Player.Nickname}" />
                                 <GridViewColumn Header="Username"
-                            DisplayMemberBinding="{Binding Player.Username}" />
+									DisplayMemberBinding="{Binding Player.Username}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
-                    <Label Content="Total des parties : " Margin="284,433,576,57" />
-                    <Label x:Name="lblTotalPlayerPlays" Content="{Binding ElementName=lstPlayerGames, Path=Items.Count, Mode=OneWay}"  Width="100"  FontWeight="Bold" Margin="395,433,507,57"/>
+                    <Label Content="Total plays : " Margin="284,433,576,57" />
+                    <Label x:Name="lblTotalPlayerPlays" Content="{Binding Items.Count, ElementName=lstPlayerGames, Mode=OneWay}"  Width="100"  FontWeight="Bold" Margin="395,433,507,57"/>
                 </Grid>
             </TabItem>
         </TabControl>

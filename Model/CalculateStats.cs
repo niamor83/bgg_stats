@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BGGStats.Helper;
 
 namespace BGGStats.Model
 {
@@ -41,12 +42,48 @@ namespace BGGStats.Model
                         }
                         currentStat.NbPlays++;
 
-                        //Add result!
+                        //TODO : Must be refactored... Awful...
                         switch (playerRating.Rating)
                         {
                             case 1:
                                 currentStat.NbFirst++;
                                 currentStat.NbFirstPercent = (double)currentStat.NbFirst / currentStat.NbPlays;
+                                currentStat.PositionRating.AddOrUpdate("1st", currentStat.NbFirst);
+                                break;
+                            case 2:
+                                currentStat.NbSecond++;
+                                currentStat.NbSecondPercent = (double)currentStat.NbSecond / currentStat.NbPlays;
+                                currentStat.PositionRating.AddOrUpdate("2nd", currentStat.NbSecond);
+                                break;
+                            case 3:
+                                currentStat.NbThird++;
+                                currentStat.NbThirdPercent = (double)currentStat.NbThird / currentStat.NbPlays;
+                                currentStat.PositionRating.AddOrUpdate("3rd", currentStat.NbThird);
+                                break;
+                            case 4:
+                                currentStat.NbFourth++;
+                                currentStat.NbFourthPercent = (double)currentStat.NbFourth / currentStat.NbPlays;
+                                currentStat.PositionRating.AddOrUpdate("4th", currentStat.NbFourth);
+                                break;
+                            case 5:
+                                currentStat.NbFifth++;
+                                currentStat.NbFifthPercent = (double)currentStat.NbFifth / currentStat.NbPlays;
+                                currentStat.PositionRating.AddOrUpdate("5th", currentStat.NbFifth);
+                                break;
+                            case 6:
+                                currentStat.NbSixth++;
+                                currentStat.NbSixthPercent = (double)currentStat.NbSixth / currentStat.NbPlays;
+                                currentStat.PositionRating.AddOrUpdate("6th", currentStat.NbSixth);
+                                break;
+                            case 7:
+                                currentStat.NbSeventh++;
+                                currentStat.NbSeventhPercent = (double)currentStat.NbSeventh / currentStat.NbPlays;
+                                currentStat.PositionRating.AddOrUpdate("7th", currentStat.NbSeventh);
+                                break;
+                            case 8:
+                                currentStat.NbEigth++;
+                                currentStat.NbEigthPercent = (double)currentStat.NbEigth / currentStat.NbPlays;
+                                currentStat.PositionRating.AddOrUpdate("8th", currentStat.NbEigth);
                                 break;
                             default:
                                 break;
@@ -54,7 +91,6 @@ namespace BGGStats.Model
 
                         //TODO : Recalculate each time.. Should be better
                         currentStat.NbFirstPercent = (double)currentStat.NbFirst / currentStat.NbPlays;
-
                 }
             }
             Stats = Stats.OrderBy(s => s.Player.Nickname).ToList();
