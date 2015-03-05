@@ -43,6 +43,8 @@ namespace BGGStats.Model
             play.Id = Plays.id.ToString();
             play.BGGId = xmlPlay.TextAttribute("id");  
             play.Game = xmlPlay.SelectSingleNode("item").Attributes["name"].InnerText;
+            play.Location = xmlPlay.TextAttribute("location");            
+            play.Date = DateTime.Parse(xmlPlay.TextAttribute("date")); //Assume that there is always a date...
             play.EditLink = String.Format(Resources.EditPlay, play.BGGId);
 
             bool hasAtLeastOnePlayer = false;
@@ -59,7 +61,7 @@ namespace BGGStats.Model
             //If empty, the current game has to be added in the total of the player
             if (!hasAtLeastOnePlayer)
             {
-                play.Result.Add(new Play.RatingPlayer() { Rating = 0, Player = new Player() { Nickname = CurrentPlayerNickname, Username = CurrentPlayerUsername } });
+                play.Result.Add(new Play.RatingPlayer() { Rating = 0, Player = new Player() { Nickname = CurrentPlayerNickname, Username = CurrentPlayerUsername} });
             }
 
             return play;
@@ -76,6 +78,7 @@ namespace BGGStats.Model
             int rating;
             string name;
             string username;
+            string score;
             
             ratingStr = players.TextAttribute("rating");
             rating = Int32.TryParse(ratingStr, out rating) ? rating : -1;
@@ -86,8 +89,9 @@ namespace BGGStats.Model
 
             name = playerName.Trim();
             username = players.TextAttribute("username");
+            score = players.TextAttribute("score");
 
-            play.Result.Add(new Play.RatingPlayer() { Rating = rating, Player = new Player() { Nickname = name, Username = username } });
+            play.Result.Add(new Play.RatingPlayer() { Rating = rating, Score = score, Player = new Player() { Nickname = name, Username = username } });
 
             //return true means that at least one player exists!
             return true;

@@ -88,6 +88,10 @@ namespace BGGStats.Model
                                 currentStat.PositionRating.AddOrUpdate("8th", currentStat.NbEigth);
                                 break;
                             default:
+                                //If not found => Undefined
+                                currentStat.NbEigth++;
+                                currentStat.NbEigthPercent = (double)currentStat.NbEigth / currentStat.NbPlays;
+                                currentStat.PositionRating.AddOrUpdate("8th", currentStat.NbEigth);
                                 break;
                         }
 

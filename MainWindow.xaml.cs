@@ -65,8 +65,6 @@ namespace BGGStats
 
             lstGames.ItemsSource = BGGPlays.AllPlays;
 
-            lstGames.DisplayMemberPath = "Game";
-
             //Calculate all Stats
             //TODO : Static class or singleton 
             calcStats = new CalculateStats(BGGPlays);

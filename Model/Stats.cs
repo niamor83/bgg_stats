@@ -30,6 +30,8 @@ namespace BGGStats.Model
         public double NbSeventhPercent { get; set; }
         public int NbEigth { get; set; }
         public double NbEigthPercent { get; set; }
+        public int NbUndefined { get; set; }
+        public double NbUndefinedPercent { get; set; }
 
         public Stats()
         {
@@ -51,6 +53,8 @@ namespace BGGStats.Model
             NbSeventhPercent = 0;
             NbEigth = 0;
             NbEigthPercent = 0;
+            NbUndefined = 0;
+            NbUndefinedPercent = 0;
 
             //TODO : To refactor...
             PositionRating = new List<KeyValuePair<string, int>>();

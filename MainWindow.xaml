@@ -8,29 +8,31 @@
     <Grid Margin="0,0,2,1">
         <Button x:Name="btnImport" Content="Import" HorizontalAlignment="Left" Margin="1385,838,0,0" VerticalAlignment="Top" Width="75" Click="btnImport_Click"/>
         <TabControl HorizontalAlignment="Left" Height="800" Margin="10,10,0,0" VerticalAlignment="Top" Width="1450">
-            <TabItem x:Name="tabDetails" Header="Details">
+            <TabItem x:Name="tabDetails" Header="All Games">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
 
-                    <ListBox x:Name="lstGames" HorizontalAlignment="Left" Height="719" Margin="10,16,0,0" VerticalAlignment="Top" Width="224" SelectionChanged="lstGames_SelectionChanged"/>
-                    <ListView x:Name="lstResult" HorizontalAlignment="Left" Height="719" Margin="267,16,0,0" VerticalAlignment="Top" Width="343" ItemsSource="{DynamicResource Results}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Rating"
-									DisplayMemberBinding="{Binding Rating}" />
-                                <GridViewColumn Header="Nickname"
-									DisplayMemberBinding="{Binding Player.Nickname}" />
-                                <GridViewColumn Header="Username"
-									DisplayMemberBinding="{Binding Player.Username}" />
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+                    <DataGrid x:Name="lstGames" HorizontalAlignment="Left" Height="719" Margin="10,16,0,0" VerticalAlignment="Top" Width="335" SelectionChanged="lstGames_SelectionChanged" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Game" Width="200" Binding="{Binding Game}"/>
+                            <DataGridTextColumn Header="Date" Width="100" Binding="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <DataGrid x:Name="lstResult" HorizontalAlignment="Left" Height="719" Margin="365,16,0,0" VerticalAlignment="Top" Width="608" ItemsSource="{DynamicResource Results}" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Rating" Width="50" Binding="{Binding Rating}"/>
+                            <DataGridTextColumn Header="Nickname" Width="200" Binding="{Binding Player.Nickname}"/>
+                            <DataGridTextColumn Header="Username" Width="150" Binding="{Binding Player.Username}"/>
+                            <DataGridTextColumn Header="Score" Width="200" Binding="{Binding Score}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tabStats" Header="Stats">
+            <TabItem x:Name="tabStats" Header="All Players">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,-61">
-                    <DataGrid x:Name="lstStatsPlayers" HorizontalAlignment="Left" Height="711" Margin="10,10,0,0" VerticalAlignment="Top" Width="836" ItemsSource="{DynamicResource Stats}" SelectionChanged="ListView_SelectionChanged">
+                    <DataGrid x:Name="lstStatsPlayers" HorizontalAlignment="Left" Height="711" Margin="10,10,0,0" VerticalAlignment="Top" Width="929" ItemsSource="{DynamicResource Stats}" SelectionChanged="ListView_SelectionChanged" AutoGenerateColumns="False">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Player" Width="250" Binding="{Binding Player.Nickname}"/>
+                            <DataGridTextColumn Header="Player" Width="200" Binding="{Binding Player.Nickname}"/>
                             <DataGridTextColumn Header="Total Plays" Width="80" Binding="{Binding NbPlays}"/>
                             <DataGridTextColumn Header="1st" Width="50" Binding="{Binding NbFirst}"/>
                             <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbFirstPercent, StringFormat=P0}"/>
@@ -48,23 +50,25 @@
                             <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbSeventhPercent, StringFormat=P0}"/>
                             <DataGridTextColumn Header="8th" Width="50" Binding="{Binding NbEigth}"/>
                             <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbEigthPercent, StringFormat=P0}"/>
+                            <DataGridTextColumn Header="Undefined" Width="50" Binding="{Binding NbUndefined}"/>
+                            <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbUndefinedPercent, StringFormat=P0}"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <Label Content="Total plays : " Margin="30,726,860,79"/>
+                    <Label Content="Total plays : " Margin="10,726,880,79"/>
                     <Label x:Name="lblTotalPlays" Content="" Width="100" Margin="129,728,1215,79" FontWeight="Bold"/>
                     <chartingToolkit:Chart  Name="pieChart" Title="" 
-		VerticalAlignment="Top" Margin="866,23,61,0" Height="474">
+		VerticalAlignment="Top" Margin="944,23,10,0" Height="698">
                         <chartingToolkit:Chart.LegendStyle>
                             <Style TargetType="datavis:Legend">
                                 <Setter Property="Width" Value="0" />
                             </Style>
                         </chartingToolkit:Chart.LegendStyle>
-                        <chartingToolkit:ColumnSeries x:Name="chartPositionRating" DependentValuePath="Value" IndependentValuePath="Key" IsSelectionEnabled="True" FlowDirection="LeftToRight"/>
+                        <chartingToolkit:ColumnSeries x:Name="chartPositionRating" DependentValuePath="Value" IndependentValuePath="Key" IsSelectionEnabled="True" FlowDirection="LeftToRight" Margin="0,-53,0,-14"/>
                     </chartingToolkit:Chart>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tabByPlayer" Header="Players">
+            <TabItem x:Name="tabByPlayer" Header="By Player">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
                     <ListBox x:Name="lstPlayers" HorizontalAlignment="Left" Height="391" Margin="10,37,0,0" VerticalAlignment="Top" Width="205" SelectionChanged="lstPlayers_SelectionChanged"/>
                     <DataGrid x:Name="lstPlayerGames" HorizontalAlignment="Left" Height="391" Margin="243,42,0,0" VerticalAlignment="Top" Width="318" SelectionChanged="lstPlayerGames_SelectionChanged" AutoGenerateColumns="False">
