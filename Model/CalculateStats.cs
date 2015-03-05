@@ -89,9 +89,9 @@ namespace BGGStats.Model
                                 break;
                             default:
                                 //If not found => Undefined
-                                currentStat.NbEigth++;
-                                currentStat.NbEigthPercent = (double)currentStat.NbEigth / currentStat.NbPlays;
-                                currentStat.PositionRating.AddOrUpdate("8th", currentStat.NbEigth);
+                                currentStat.NbUndefined++;
+                                currentStat.NbUndefinedPercent = (double)currentStat.NbUndefined / currentStat.NbPlays;
+                                currentStat.PositionRating.AddOrUpdate("Undefined", currentStat.NbUndefined);
                                 break;
                         }
 

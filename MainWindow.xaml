@@ -6,8 +6,8 @@
         xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         Title="BGG - Stats" Height="900" Width="1500">
     <Grid Margin="0,0,2,1">
-        <Button x:Name="btnImport" Content="Import" HorizontalAlignment="Left" Margin="1385,838,0,0" VerticalAlignment="Top" Width="75" Click="btnImport_Click"/>
-        <TabControl HorizontalAlignment="Left" Height="800" Margin="10,10,0,0" VerticalAlignment="Top" Width="1450">
+        <Button x:Name="btnImport" Content="Import" HorizontalAlignment="Left" Margin="475,16,0,0" VerticalAlignment="Top" Width="112" Click="btnImport_Click" Height="20"/>
+        <TabControl HorizontalAlignment="Left" Height="800" Margin="10,50,0,0" VerticalAlignment="Top" Width="1450">
             <TabItem x:Name="tabDetails" Header="All Games">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
 
@@ -103,6 +103,10 @@
                 </Grid>
             </TabItem>
         </TabControl>
+        <TextBox x:Name="txtUsername" HorizontalAlignment="Left" Height="23" Margin="331,13,0,0" TextWrapping="Wrap" Text="niamor" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtNickname" HorizontalAlignment="Left" Height="23" Margin="99,13,0,0" TextWrapping="Wrap" Text="Romain" VerticalAlignment="Top" Width="120"/>
+        <TextBlock HorizontalAlignment="Left" Margin="23,14,0,0" TextWrapping="Wrap" Text="Nickname" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="260,14,0,0" TextWrapping="Wrap" Text="Username" VerticalAlignment="Top"/>
 
 
     </Grid>

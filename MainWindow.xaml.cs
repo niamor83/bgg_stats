@@ -33,15 +33,15 @@ namespace BGGStats
         public MainWindow()
         {
             InitializeComponent();
-
-            //TODO : has to be configured automatically
-            BGGPlays.CurrentPlayerUsername = "niamor";
-            BGGPlays.CurrentPlayerNickname = "Romain";
         }
 
         private void btnImport_Click(object sender, RoutedEventArgs e)
         {
             BGGPlays.ResetPlays();
+
+            //TODO : Use configuration file to keep last user
+            BGGPlays.CurrentPlayerUsername = txtUsername.Text;
+            BGGPlays.CurrentPlayerNickname = txtNickname.Text;
 
             //Call Webservice from BGG to retrieve plays
             WebClient serviceRequest = new WebClient();
@@ -96,7 +96,7 @@ namespace BGGStats
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(((Stats)lstStatsPlayers.SelectedItem).Player != null)
+            if (lstStatsPlayers.SelectedItem != null && ((Stats)lstStatsPlayers.SelectedItem).Player != null)
                 chartPositionRating.ItemsSource = calcStats.Stats.Single(s => s.Player.Nickname == (((Stats)lstStatsPlayers.SelectedItem)).Player.Nickname).PositionRating.OrderBy(s => s.Key);
         }
 
