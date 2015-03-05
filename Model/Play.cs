@@ -18,6 +18,7 @@ namespace BGGStats.Model
         public string Id { get; set; }
         public string BGGId { get; set; }
         public string Game { get; set; }
+        public string EditLink { get; set; }
 
         public List<RatingPlayer> Result { get; set; }
 

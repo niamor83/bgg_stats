@@ -1,7 +1,9 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" x:Class="BGGStats.MainWindow"
+        xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         Title="BGG - Stats" Height="900" Width="1500">
     <Grid Margin="0,0,2,1">
         <Button x:Name="btnImport" Content="Import" HorizontalAlignment="Left" Margin="1385,838,0,0" VerticalAlignment="Top" Width="75" Click="btnImport_Click"/>
@@ -26,45 +28,60 @@
             </TabItem>
             <TabItem x:Name="tabStats" Header="Stats">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,-61">
-                    <ListView x:Name="lstStatsPlayers" HorizontalAlignment="Left" Height="711" Margin="10,10,0,0" VerticalAlignment="Top" Width="836" ItemsSource="{DynamicResource Stats}" SelectionChanged="ListView_SelectionChanged">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Player" Width="250" DisplayMemberBinding="{Binding Player.Nickname}"/>
-                                <GridViewColumn Header="Total Plays" Width="80" DisplayMemberBinding="{Binding NbPlays}"/>
-                                <GridViewColumn Header="1st" Width="50" DisplayMemberBinding="{Binding NbFirst}"/>
-                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbFirstPercent, StringFormat=P0}"/>
-                                <GridViewColumn Header="2nd" Width="50" DisplayMemberBinding="{Binding NbSecond}"/>
-                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbSecondPercent, StringFormat=P0}"/>
-                                <GridViewColumn Header="3rd" Width="50" DisplayMemberBinding="{Binding NbThird}"/>
-                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbThirdPercent, StringFormat=P0}"/>
-                                <GridViewColumn Header="4th" Width="50" DisplayMemberBinding="{Binding NbFourth}"/>
-                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbFourthpercent, StringFormat=P0}"/>
-                                <GridViewColumn Header="5th" Width="50" DisplayMemberBinding="{Binding NbFifth}"/>
-                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbFifthPercent, StringFormat=P0}"/>
-                                <GridViewColumn Header="6th" Width="50" DisplayMemberBinding="{Binding NbSixth}"/>
-                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbSixthPercent, StringFormat=P0}"/>
-                                <GridViewColumn Header="7th" Width="50" DisplayMemberBinding="{Binding NbSeventh}"/>
-                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbSeventhPercent, StringFormat=P0}"/>
-                                <GridViewColumn Header="8th" Width="50" DisplayMemberBinding="{Binding NbEigth}"/>
-                                <GridViewColumn Header="%" Width="50" DisplayMemberBinding="{Binding NbEigthPercent, StringFormat=P0}"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+                    <DataGrid x:Name="lstStatsPlayers" HorizontalAlignment="Left" Height="711" Margin="10,10,0,0" VerticalAlignment="Top" Width="836" ItemsSource="{DynamicResource Stats}" SelectionChanged="ListView_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Player" Width="250" Binding="{Binding Player.Nickname}"/>
+                            <DataGridTextColumn Header="Total Plays" Width="80" Binding="{Binding NbPlays}"/>
+                            <DataGridTextColumn Header="1st" Width="50" Binding="{Binding NbFirst}"/>
+                            <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbFirstPercent, StringFormat=P0}"/>
+                            <DataGridTextColumn Header="2nd" Width="50" Binding="{Binding NbSecond}"/>
+                            <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbSecondPercent, StringFormat=P0}"/>
+                            <DataGridTextColumn Header="3rd" Width="50" Binding="{Binding NbThird}"/>
+                            <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbThirdPercent, StringFormat=P0}"/>
+                            <DataGridTextColumn Header="4th" Width="50" Binding="{Binding NbFourth}"/>
+                            <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbFourthpercent, StringFormat=P0}"/>
+                            <DataGridTextColumn Header="5th" Width="50" Binding="{Binding NbFifth}"/>
+                            <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbFifthPercent, StringFormat=P0}"/>
+                            <DataGridTextColumn Header="6th" Width="50" Binding="{Binding NbSixth}"/>
+                            <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbSixthPercent, StringFormat=P0}"/>
+                            <DataGridTextColumn Header="7th" Width="50" Binding="{Binding NbSeventh}"/>
+                            <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbSeventhPercent, StringFormat=P0}"/>
+                            <DataGridTextColumn Header="8th" Width="50" Binding="{Binding NbEigth}"/>
+                            <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbEigthPercent, StringFormat=P0}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
 
                     <Label Content="Total plays : " Margin="30,726,860,79"/>
                     <Label x:Name="lblTotalPlays" Content="" Width="100" Margin="129,728,1215,79" FontWeight="Bold"/>
                     <chartingToolkit:Chart  Name="pieChart" Title="" 
-		VerticalAlignment="Top" Margin="884,39,43,0" Height="474">
-                        <chartingToolkit:PieSeries x:Name="chartPositionRating" DependentValuePath="Value" 
-		IndependentValuePath="Key" 
-		IsSelectionEnabled="True" />
+		VerticalAlignment="Top" Margin="866,23,61,0" Height="474">
+                        <chartingToolkit:Chart.LegendStyle>
+                            <Style TargetType="datavis:Legend">
+                                <Setter Property="Width" Value="0" />
+                            </Style>
+                        </chartingToolkit:Chart.LegendStyle>
+                        <chartingToolkit:ColumnSeries x:Name="chartPositionRating" DependentValuePath="Value" IndependentValuePath="Key" IsSelectionEnabled="True" FlowDirection="LeftToRight"/>
                     </chartingToolkit:Chart>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabByPlayer" Header="Players">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
                     <ListBox x:Name="lstPlayers" HorizontalAlignment="Left" Height="391" Margin="10,37,0,0" VerticalAlignment="Top" Width="205" SelectionChanged="lstPlayers_SelectionChanged"/>
-                    <ListBox x:Name="lstPlayerGames" HorizontalAlignment="Left" Height="391" Margin="284,37,0,0" VerticalAlignment="Top" Width="224" SelectionChanged="lstPlayerGames_SelectionChanged" />
+                    <DataGrid x:Name="lstPlayerGames" HorizontalAlignment="Left" Height="391" Margin="243,42,0,0" VerticalAlignment="Top" Width="318" SelectionChanged="lstPlayerGames_SelectionChanged" AutoGenerateColumns="False">
+                        <DataGrid.Resources>
+                            <sys:String x:Key="edit">Edit</sys:String>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Game" Width="250" Binding="{Binding Game}"/>
+                            <DataGridHyperlinkColumn Header="Edit" Width="70" Binding="{Binding EditLink}" ContentBinding="{Binding Source={StaticResource edit}}">
+                                <DataGridHyperlinkColumn.ElementStyle>
+                                    <Style>
+                                        <EventSetter Event="Hyperlink.Click" Handler="lstPlayerGames_Click"/>
+                                    </Style>
+                                </DataGridHyperlinkColumn.ElementStyle>
+                            </DataGridHyperlinkColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
                     <ListView x:Name="lstPlayerResults" HorizontalAlignment="Left" Height="374" Margin="584,37,0,0" VerticalAlignment="Top" Width="343" ItemsSource="{DynamicResource PlayerResults}">
                         <ListView.View>
                             <GridView>

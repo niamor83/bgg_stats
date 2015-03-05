@@ -1,6 +1,8 @@
 ﻿using BGGStats.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -47,6 +49,7 @@ namespace BGGStats
             XmlDocument xmlDoc = new XmlDocument();
             int counter = 1;
 
+            //TODO Add String to resource file
             string response = serviceRequest.DownloadString(new Uri(String.Format("http://www.boardgamegeek.com/xmlapi2/plays?username={0}&page={1}", BGGPlays.CurrentPlayerUsername, counter)));
             while (response.Contains("<play id"))
             {
@@ -63,7 +66,6 @@ namespace BGGStats
             lstGames.ItemsSource = BGGPlays.AllPlays;
 
             lstGames.DisplayMemberPath = "Game";
-            lstPlayerGames.DisplayMemberPath = "Game";
 
             //Calculate all Stats
             //TODO : Static class or singleton 
@@ -96,8 +98,14 @@ namespace BGGStats
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            chartPositionRating.ItemsSource = calcStats.Stats.Single(s => s.Player.Nickname == (((Stats)lstStatsPlayers.SelectedItem)).Player.Nickname).PositionRating;
+            if(((Stats)lstStatsPlayers.SelectedItem).Player != null)
+                chartPositionRating.ItemsSource = calcStats.Stats.Single(s => s.Player.Nickname == (((Stats)lstStatsPlayers.SelectedItem)).Player.Nickname).PositionRating.OrderBy(s => s.Key);
         }
 
+        private void lstPlayerGames_Click(object sender, RoutedEventArgs e)
+        {
+            Hyperlink link = (Hyperlink)e.OriginalSource;
+            Process.Start(link.NavigateUri.AbsoluteUri);
+        }
     }
 }

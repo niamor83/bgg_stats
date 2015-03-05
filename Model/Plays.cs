@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using BGGStats.Helper;
+using System.Collections.ObjectModel;
 
 namespace BGGStats.Model
 {
@@ -41,8 +42,8 @@ namespace BGGStats.Model
             Play play = new Play();
             play.Id = Plays.id.ToString();
             play.BGGId = xmlPlay.TextAttribute("id");  
-            play.Game = xmlPlay.SelectSingleNode("item").Attributes["name"].InnerText;            
-
+            play.Game = xmlPlay.SelectSingleNode("item").Attributes["name"].InnerText;
+            play.EditLink = String.Format(Resources.EditPlay, play.BGGId);
 
             bool hasAtLeastOnePlayer = false;
 

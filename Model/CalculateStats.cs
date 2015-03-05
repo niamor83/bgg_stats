@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BGGStats.Helper;
+using System.Collections.ObjectModel;
 
 namespace BGGStats.Model
 {
@@ -14,12 +15,12 @@ namespace BGGStats.Model
 
         //public List<string> PlayersName {get; set;}
 
-        public List<Stats> Stats { get; private set; }
+        public ObservableCollection<Stats> Stats { get; private set; }
 
         public CalculateStats(Plays plays)
         {
             BGGPlays = plays;
-            Stats = new List<Stats>();
+            Stats = new ObservableCollection<Stats>();
             //PlayersName = new List<string>();
 
             GeneratePlayerStats();
@@ -32,7 +33,8 @@ namespace BGGStats.Model
                 {
                         // TODO : Not correct due to Dictionnary (possibilit to have multiple value for one rating). To be updated!!!
                         //TODO Take care of the coupe Nickname + username to take into account to avoid duplicates
-                    if (!Stats.Exists(s => s.Player.Nickname.Equals(playerRating.Player.Nickname)))
+                    //TODO Change count because it's not efficient...
+                    if (Stats.Count(s => s.Player.Nickname.Equals(playerRating.Player.Nickname)) == 0)
                         {
                             Stats.Add(currentStat = new Stats() { Player = new Player() { Nickname = playerRating.Player.Nickname, Username = playerRating.Player.Username } });
                         }
@@ -93,7 +95,7 @@ namespace BGGStats.Model
                         currentStat.NbFirstPercent = (double)currentStat.NbFirst / currentStat.NbPlays;
                 }
             }
-            Stats = Stats.OrderBy(s => s.Player.Nickname).ToList();
+            Stats = new ObservableCollection<Stats>(Stats.OrderBy(s => s.Player.Nickname));
             
         }
 
