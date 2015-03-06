@@ -37,40 +37,81 @@ namespace BGGStats
 
         private void btnImport_Click(object sender, RoutedEventArgs e)
         {
-            BGGPlays.ResetPlays();
+            //disable Control                     
+            pbLoading.Value = 0;
+            pbLoading.Visibility = Visibility.Visible;
+            tabControl.IsEnabled = false;
+            btnImport.IsEnabled = false;
+            txtNickname.IsEnabled = false;
+            txtUsername.IsEnabled = false;
 
-            //TODO : Use configuration file to keep last user
+            //TODO : Use configuration file to keep last user  
             BGGPlays.CurrentPlayerUsername = txtUsername.Text;
             BGGPlays.CurrentPlayerNickname = txtNickname.Text;
+            
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.DoWork += worker_DoWork;
+            worker.ProgressChanged += worker_ProgressChanged;
+
+            worker.RunWorkerAsync();
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_RunWorkerCompleted);            
+
+        }
+
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //Enable controls
+            //TODO : To be adapted in case of error (currently this code is never reached)
+            pbLoading.Visibility = Visibility.Hidden;
+            tabControl.IsEnabled = true;
+            btnImport.IsEnabled = true;
+            txtNickname.IsEnabled = true;
+            txtUsername.IsEnabled = true;
+            
+            lblTotalPlays.Content = BGGPlays.TotalPlays;
+            lstGames.ItemsSource = BGGPlays.AllPlays;
+
+            //Calculate all Stats
+            //TODO : Static class or singleton 
+            calcStats = new CalculateStats(BGGPlays);
+            lstPlayers.ItemsSource = calcStats.Stats.Select(s => s.Player.Nickname);
+            //lstPlayers.DisplayMemberPath = "Player.Nickname";
+            Resources["Stats"] = calcStats.Stats;
+        }
+
+        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            pbLoading.Value = e.ProgressPercentage;
+        }
+
+        void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BGGPlays.ResetPlays();
 
             //Call Webservice from BGG to retrieve plays
             WebClient serviceRequest = new WebClient();
             serviceRequest.Encoding = System.Text.Encoding.UTF8;
             XmlDocument xmlDoc = new XmlDocument();
             int counter = 1;
+            int totalPlaysXml = 0;
 
             //TODO Add String to resource file
             string response = serviceRequest.DownloadString(new Uri(String.Format("http://www.boardgamegeek.com/xmlapi2/plays?username={0}&page={1}", BGGPlays.CurrentPlayerUsername, counter)));
             while (response.Contains("<play id"))
-            {
+            {               
                 xmlDoc.LoadXml(response);
+                //Update Progress Bar
+                if(totalPlaysXml == 0)
+                        totalPlaysXml = Int32.Parse(xmlDoc.SelectSingleNode("plays").Attributes["total"].InnerText);
+                
+                (sender as BackgroundWorker).ReportProgress(Math.Min(Convert.ToInt32(counter*100.0/totalPlaysXml*100.0),100));
 
                 BGGPlays.LoadPlays(xmlDoc);
 
                 counter++;
                 response = serviceRequest.DownloadString(new Uri(String.Format("http://www.boardgamegeek.com/xmlapi2/plays?username={0}&page={1}", BGGPlays.CurrentPlayerUsername, counter)));
             }
-
-            lblTotalPlays.Content = BGGPlays.TotalPlays;
-
-            lstGames.ItemsSource = BGGPlays.AllPlays;
-
-            //Calculate all Stats
-            //TODO : Static class or singleton 
-            calcStats = new CalculateStats(BGGPlays);
-            lstPlayers.ItemsSource = calcStats.Stats.Select( s => s.Player.Nickname);
-            //lstPlayers.DisplayMemberPath = "Player.Nickname";
-            Resources["Stats"] = calcStats.Stats;
 
 
         }

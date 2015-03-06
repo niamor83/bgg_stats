@@ -5,9 +5,10 @@
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" x:Class="BGGStats.MainWindow"
         xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         Title="BGG - Stats" Height="900" Width="1500">
-    <Grid Margin="0,0,2,1">
+    <Grid Margin="0,0,2,1" x:Name="gdGlobal">
         <Button x:Name="btnImport" Content="Import" HorizontalAlignment="Left" Margin="475,16,0,0" VerticalAlignment="Top" Width="112" Click="btnImport_Click" Height="20"/>
-        <TabControl HorizontalAlignment="Left" Height="800" Margin="10,50,0,0" VerticalAlignment="Top" Width="1450">
+        <ProgressBar x:Name="pbLoading" Visibility="Hidden" HorizontalAlignment="Left" Height="50" Margin="332,242,0,0" VerticalAlignment="Top" Width="600" Minimum="0" Maximum="100" />
+        <TabControl HorizontalAlignment="Left" Height="800" Margin="10,50,0,0" VerticalAlignment="Top" Width="1450" x:Name="tabControl">
             <TabItem x:Name="tabDetails" Header="All Games">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
 
@@ -17,7 +18,6 @@
                             <DataGridTextColumn Header="Date" Width="100" Binding="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
                     <DataGrid x:Name="lstResult" HorizontalAlignment="Left" Height="719" Margin="365,16,0,0" VerticalAlignment="Top" Width="608" ItemsSource="{DynamicResource Results}" AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Rating" Width="50" Binding="{Binding Rating}"/>
@@ -26,6 +26,7 @@
                             <DataGridTextColumn Header="Score" Width="200" Binding="{Binding Score}"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                    
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabStats" Header="All Players">
