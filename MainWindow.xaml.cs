@@ -71,6 +71,7 @@ namespace BGGStats
             
             lblTotalPlays.Content = BGGPlays.TotalPlays;
             lstGames.ItemsSource = BGGPlays.AllPlays;
+            dgLocations.ItemsSource = BGGPlays.LocationCounts;
 
             //Calculate all Stats
             //TODO : Static class or singleton 
@@ -132,7 +133,7 @@ namespace BGGStats
         private void lstPlayerGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(lstPlayerGames.SelectedItem != null)
-            Resources["PlayerResults"] = BGGPlays.AllPlays.Single(p => p.Id == ((Play)lstPlayerGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+                Resources["PlayerResults"] = BGGPlays.AllPlays.Single(p => p.Id == ((Play)lstPlayerGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

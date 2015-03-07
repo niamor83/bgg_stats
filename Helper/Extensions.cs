@@ -24,7 +24,6 @@ namespace BGGStats.Helper
             dictionary.Add(new KeyValuePair<TKey, TValue>(key, value));
 
             return dictionary;
-
         }
     }
 }

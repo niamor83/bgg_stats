@@ -7,7 +7,6 @@
         Title="BGG - Stats" Height="900" Width="1500">
     <Grid Margin="0,0,2,1" x:Name="gdGlobal">
         <Button x:Name="btnImport" Content="Import" HorizontalAlignment="Left" Margin="475,16,0,0" VerticalAlignment="Top" Width="112" Click="btnImport_Click" Height="20"/>
-        <ProgressBar x:Name="pbLoading" Visibility="Hidden" HorizontalAlignment="Left" Height="50" Margin="332,242,0,0" VerticalAlignment="Top" Width="600" Minimum="0" Maximum="100" />
         <TabControl HorizontalAlignment="Left" Height="800" Margin="10,50,0,0" VerticalAlignment="Top" Width="1450" x:Name="tabControl">
             <TabItem x:Name="tabDetails" Header="All Games">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
@@ -26,7 +25,7 @@
                             <DataGridTextColumn Header="Score" Width="200" Binding="{Binding Score}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    
+
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabStats" Header="All Players">
@@ -103,12 +102,29 @@
                     <Label x:Name="lblTotalPlayerPlays" Content="{Binding Items.Count, ElementName=lstPlayerGames, Mode=OneWay}"  Width="100"  FontWeight="Bold" Margin="395,433,507,57"/>
                 </Grid>
             </TabItem>
+            <TabItem x:Name="tabByLocation" Header="By Location">
+                <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
+                    <DataGrid x:Name="dgLocations" HorizontalAlignment="Left" Margin="46,42,0,0" VerticalAlignment="Top" Height="652" Width="320" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Location" Width="250" Binding="{Binding Key}"/>
+                            <DataGridTextColumn Header="Counts" Width="250" Binding="{Binding Value}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid x:Name="dgLocationsGames" HorizontalAlignment="Left" Margin="416,42,0,0" VerticalAlignment="Top" Height="652" Width="481"/>
+
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="tabByGame" Header="By Game">
+                <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
+
+                </Grid>
+            </TabItem>
         </TabControl>
         <TextBox x:Name="txtUsername" HorizontalAlignment="Left" Height="23" Margin="331,13,0,0" TextWrapping="Wrap" Text="niamor" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="txtNickname" HorizontalAlignment="Left" Height="23" Margin="99,13,0,0" TextWrapping="Wrap" Text="Romain" VerticalAlignment="Top" Width="120"/>
         <TextBlock HorizontalAlignment="Left" Margin="23,14,0,0" TextWrapping="Wrap" Text="Nickname" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="260,14,0,0" TextWrapping="Wrap" Text="Username" VerticalAlignment="Top"/>
 
-
+        <ProgressBar x:Name="pbLoading" Visibility="Hidden" HorizontalAlignment="Left" Height="50" Margin="332,242,0,0" VerticalAlignment="Top" Width="600" Minimum="0" Maximum="100" />
     </Grid>
 </Window>

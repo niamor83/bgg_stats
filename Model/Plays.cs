@@ -18,9 +18,12 @@ namespace BGGStats.Model
 
         public int TotalPlays { get; private set; }
 
+        public ObservableCollection<KeyValuePair<string, int>> LocationCounts { get; set; }
+
         public Plays()
         {
             AllPlays = new List<Play>();
+            LocationCounts = new ObservableCollection<KeyValuePair<string, int>>();
         }
 
         public void LoadPlays(XmlDocument xmlPlays)
@@ -28,7 +31,7 @@ namespace BGGStats.Model
             foreach (XmlNode play in xmlPlays.SelectNodes("//plays/play"))
             {
                 //Not optimal but not a big performance issue..
-                  for (int i = 0; i < Int32.Parse(play.TextAttribute("quantity")); i++ )
+                for (int i = 0; i < Int32.Parse(play.TextAttribute("quantity")); i++ )
                 {
                     AllPlays.Add(LoadPlay(play));
                     Plays.id++;
@@ -64,7 +67,25 @@ namespace BGGStats.Model
                 play.Result.Add(new Play.RatingPlayer() { Rating = 0, Player = new Player() { Nickname = CurrentPlayerNickname, Username = CurrentPlayerUsername} });
             }
 
+            AddOrIncrementLocationCounts(LocationCounts, play.Location);
+
             return play;
+        }
+
+        private void AddOrIncrementLocationCounts(ObservableCollection<KeyValuePair<string, int>> locationCounts, string location)
+        {
+            //TODO remove count which is not efficient
+            if (locationCounts.Count(k => k.Key.Equals(location, StringComparison.CurrentCultureIgnoreCase) ) > 0)
+            {
+                //Assume that there is only on entry...
+                int oldValue = locationCounts.Single(k => k.Key.Equals(location, StringComparison.CurrentCultureIgnoreCase)).Value;
+                locationCounts.Remove(locationCounts.Single(k => k.Key.Equals(location, StringComparison.CurrentCultureIgnoreCase)));
+                locationCounts.Add(new KeyValuePair<string, int>(location, ++oldValue));
+            }
+            else
+            {
+                locationCounts.Add(new KeyValuePair<string, int>(location, 1));
+            }    
         }
 
         public void ResetPlays()
