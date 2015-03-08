@@ -104,14 +104,38 @@
             </TabItem>
             <TabItem x:Name="tabByLocation" Header="By Location">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
-                    <DataGrid x:Name="dgLocations" HorizontalAlignment="Left" Margin="46,42,0,0" VerticalAlignment="Top" Height="652" Width="320" AutoGenerateColumns="False">
+                    <DataGrid x:Name="dgLocations" HorizontalAlignment="Left" Margin="46,42,0,0" VerticalAlignment="Top" Height="652" Width="342" AutoGenerateColumns="False" SelectionChanged="dgLocations_SelectionChanged">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Location" Width="250" Binding="{Binding Key}"/>
                             <DataGridTextColumn Header="Counts" Width="250" Binding="{Binding Value}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid x:Name="dgLocationsGames" HorizontalAlignment="Left" Margin="416,42,0,0" VerticalAlignment="Top" Height="652" Width="481"/>
-
+                    <DataGrid x:Name="dgLocationGames" HorizontalAlignment="Left" Height="652" Margin="408,42,0,0" VerticalAlignment="Top" Width="366" SelectionChanged="dgLocationGames_SelectionChanged" AutoGenerateColumns="False">
+                        <DataGrid.Resources>
+                            <sys:String x:Key="edit">Edit</sys:String>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Game" Width="250" Binding="{Binding Game}"/>
+                            <DataGridHyperlinkColumn Header="Edit" Width="70" Binding="{Binding EditLink}" ContentBinding="{Binding Source={StaticResource edit}}">
+                                <DataGridHyperlinkColumn.ElementStyle>
+                                    <Style>
+                                        <EventSetter Event="Hyperlink.Click" Handler="dgLocationGames_Click"/>
+                                    </Style>
+                                </DataGridHyperlinkColumn.ElementStyle>
+                            </DataGridHyperlinkColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid x:Name="dgLocationSelectedGame" HorizontalAlignment="Left" Height="652" Margin="802,42,0,0" VerticalAlignment="Top" Width="468" SelectionChanged="dgLocationGames_SelectionChanged" AutoGenerateColumns="False">
+                        <DataGrid.Resources>
+                            <sys:String x:Key="edit">Edit</sys:String>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Rating" Width="50" Binding="{Binding Rating}"/>
+                            <DataGridTextColumn Header="Nickname" Width="150" Binding="{Binding Player.Nickname}"/>
+                            <DataGridTextColumn Header="Username" Width="100" Binding="{Binding Player.Username}"/>
+                            <DataGridTextColumn Header="Score" Width="100" Binding="{Binding Score}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabByGame" Header="By Game">

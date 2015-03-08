@@ -46,7 +46,7 @@ namespace BGGStats.Model
             play.Id = Plays.id.ToString();
             play.BGGId = xmlPlay.TextAttribute("id");  
             play.Game = xmlPlay.SelectSingleNode("item").Attributes["name"].InnerText;
-            play.Location = xmlPlay.TextAttribute("location");            
+            play.Location = xmlPlay.TextAttribute("location").Trim();            
             play.Date = DateTime.Parse(xmlPlay.TextAttribute("date")); //Assume that there is always a date...
             play.EditLink = String.Format(Resources.EditPlay, play.BGGId);
 

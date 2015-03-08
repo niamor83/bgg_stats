@@ -71,7 +71,7 @@ namespace BGGStats
             
             lblTotalPlays.Content = BGGPlays.TotalPlays;
             lstGames.ItemsSource = BGGPlays.AllPlays;
-            dgLocations.ItemsSource = BGGPlays.LocationCounts;
+            dgLocations.ItemsSource = BGGPlays.LocationCounts.OrderBy(l => l.Key);
 
             //Calculate all Stats
             //TODO : Static class or singleton 
@@ -117,6 +117,12 @@ namespace BGGStats
 
         }
 
+        private void HyperLinkBehavior(RoutedEventArgs e)
+        {
+            Hyperlink link = (Hyperlink)e.OriginalSource;
+            Process.Start(link.NavigateUri.AbsoluteUri);
+        }
+
         //TAB Details
         private void lstGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -144,8 +150,25 @@ namespace BGGStats
 
         private void lstPlayerGames_Click(object sender, RoutedEventArgs e)
         {
-            Hyperlink link = (Hyperlink)e.OriginalSource;
-            Process.Start(link.NavigateUri.AbsoluteUri);
+            HyperLinkBehavior(e);
+        }
+
+        //TAB Locations
+        private void dgLocationGames_Click(object sender, RoutedEventArgs e)
+        {
+            HyperLinkBehavior(e);
+        }              
+
+        private void dgLocationGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgLocationGames.SelectedItem != null)
+                dgLocationSelectedGame.ItemsSource = BGGPlays.AllPlays.Single(p => p.Id == ((Play)dgLocationGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+        }
+
+        private void dgLocations_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgLocations.SelectedItem != null)
+                dgLocationGames.ItemsSource = BGGPlays.AllPlays.Where(p => p.Location.Equals(((KeyValuePair<string, int>)dgLocations.SelectedItem).Key, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }
