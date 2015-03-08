@@ -107,7 +107,7 @@
                     <DataGrid x:Name="dgLocations" HorizontalAlignment="Left" Margin="46,42,0,0" VerticalAlignment="Top" Height="652" Width="342" AutoGenerateColumns="False" SelectionChanged="dgLocations_SelectionChanged">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Location" Width="250" Binding="{Binding Key}"/>
-                            <DataGridTextColumn Header="Counts" Width="250" Binding="{Binding Value}"/>
+                            <DataGridTextColumn Header="Counts" Width="60" Binding="{Binding Value}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <DataGrid x:Name="dgLocationGames" HorizontalAlignment="Left" Height="652" Margin="408,42,0,0" VerticalAlignment="Top" Width="366" SelectionChanged="dgLocationGames_SelectionChanged" AutoGenerateColumns="False">
@@ -136,11 +136,22 @@
                             <DataGridTextColumn Header="Score" Width="100" Binding="{Binding Score}"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <Label Content="Different locations : " HorizontalAlignment="Left" Margin="46,699,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="lblDistinctLocations" HorizontalAlignment="Left" Margin="167,699,0,0" VerticalAlignment="Top" FontWeight="Bold" />
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabByGame" Header="By Game">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
-
+                    <DataGrid x:Name="dgGames" HorizontalAlignment="Left" Margin="46,42,0,0" VerticalAlignment="Top" Height="652" Width="342" AutoGenerateColumns="False" SelectionChanged="dgGames_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Location" Width="250" Binding="{Binding Key}"/>
+                            <DataGridTextColumn Header="Counts" Width="60" Binding="{Binding Value}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Label Content="Different games : " HorizontalAlignment="Left" Margin="46,699,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="lblDistinctGames" HorizontalAlignment="Left" Margin="167,699,0,0" VerticalAlignment="Top" FontWeight="Bold" />
+                    <Label Content="H-Index :" HorizontalAlignment="Left" Margin="46,725,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="lblHIndex" HorizontalAlignment="Left" Margin="150,725,0,0" VerticalAlignment="Top" FontWeight="Bold" />
                 </Grid>
             </TabItem>
         </TabControl>

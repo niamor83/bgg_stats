@@ -72,6 +72,10 @@ namespace BGGStats
             lblTotalPlays.Content = BGGPlays.TotalPlays;
             lstGames.ItemsSource = BGGPlays.AllPlays;
             dgLocations.ItemsSource = BGGPlays.LocationCounts.OrderBy(l => l.Key);
+            lblDistinctLocations.Content = BGGPlays.LocationCounts.Count;
+            dgGames.ItemsSource = BGGPlays.GameCounts.OrderBy(l => l.Key);
+            lblDistinctGames.Content = BGGPlays.GameCounts.Count;
+            lblHIndex.Content = BGGPlays.GetHIndex();
 
             //Calculate all Stats
             //TODO : Static class or singleton 
@@ -169,6 +173,11 @@ namespace BGGStats
         {
             if (dgLocations.SelectedItem != null)
                 dgLocationGames.ItemsSource = BGGPlays.AllPlays.Where(p => p.Location.Equals(((KeyValuePair<string, int>)dgLocations.SelectedItem).Key, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        private void dgGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

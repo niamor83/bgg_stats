@@ -19,11 +19,13 @@ namespace BGGStats.Model
         public int TotalPlays { get; private set; }
 
         public ObservableCollection<KeyValuePair<string, int>> LocationCounts { get; set; }
+        public ObservableCollection<KeyValuePair<string, int>> GameCounts { get; set; }
 
         public Plays()
         {
             AllPlays = new List<Play>();
             LocationCounts = new ObservableCollection<KeyValuePair<string, int>>();
+            GameCounts = new ObservableCollection<KeyValuePair<string, int>>();
         }
 
         public void LoadPlays(XmlDocument xmlPlays)
@@ -68,6 +70,7 @@ namespace BGGStats.Model
             }
 
             AddOrIncrementLocationCounts(LocationCounts, play.Location);
+            AddOrIncrementLocationCounts(GameCounts, play.Game);
 
             return play;
         }
@@ -116,6 +119,19 @@ namespace BGGStats.Model
 
             //return true means that at least one player exists!
             return true;
+        }
+
+        public int GetHIndex()
+        {
+            int counter = 0;
+            foreach (var item in GameCounts.OrderByDescending(p => p.Value))
+            {
+                if (item.Value > counter)
+                    counter++;
+                else
+                    break;
+            }
+            return counter;
         }
 
     }
