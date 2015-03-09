@@ -158,6 +158,8 @@ namespace BGGStats
         }
 
         //TAB Locations
+        //TODO : Refactor, duplicate useless code
+        //TODO : Update variables names...
         private void dgLocationGames_Click(object sender, RoutedEventArgs e)
         {
             HyperLinkBehavior(e);
@@ -175,9 +177,27 @@ namespace BGGStats
                 dgLocationGames.ItemsSource = BGGPlays.AllPlays.Where(p => p.Location.Equals(((KeyValuePair<string, int>)dgLocations.SelectedItem).Key, StringComparison.CurrentCultureIgnoreCase));
         }
 
+
+        //TAB Games
+        //TODO : Refactor, duplicate useless code
+        //TODO : Update variables names...
         private void dgGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            if (dgGames.SelectedItem != null)
+                dgByGamesGame.ItemsSource = BGGPlays.AllPlays.Where(p => p.Game.Equals(((KeyValuePair<string, int>)dgGames.SelectedItem).Key, StringComparison.CurrentCultureIgnoreCase));
         }
+
+        private void dgByGamesGame_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgByGamesGame.SelectedItem != null)
+                dgByGameSelectedGame.ItemsSource = BGGPlays.AllPlays.Single(p => p.Id == ((Play)dgByGamesGame.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+        }
+
+
+        private void dgByGamesGame_Click(object sender, RoutedEventArgs e)
+        {
+            HyperLinkBehavior(e);
+        } 
+        
     }
 }
