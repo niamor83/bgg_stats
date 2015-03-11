@@ -14,6 +14,13 @@ namespace BGGStats.Model
 
         private const string ALL_YEARS = "All";
         private static int id = 0;
+
+        public enum DateRange {
+            MONTH,
+            YEAR
+        }
+
+
         public string CurrentPlayerUsername { get; set; }
         public string CurrentPlayerNickname { get; set; }
         public ObservableCollection<Play> AllPlays { get; private set; }
@@ -177,5 +184,26 @@ namespace BGGStats.Model
                 AddOrIncrementLocationCounts(GameCounts, play.Game);
             }
 	    }
+
+        public List<KeyValuePair<string, int>> GetGamesByDateRange(DateRange dateRange)
+        {
+            List<KeyValuePair<string, int>> GamesByDateRange = new List<KeyValuePair<string, int>>();
+
+            switch (dateRange)
+            {
+                case DateRange.MONTH:
+                    break;
+                case DateRange.YEAR:
+                    //Skip the "All" value...
+                    foreach (var year in Years.OrderBy(y => y).Take(Years.Count - 1))
+                    {
+                        GamesByDateRange.AddOrUpdate(year, AllPlays.Count(p => p.Date.Year.Equals(Int32.Parse(year))));
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return GamesByDateRange;
+        }
     }
 }

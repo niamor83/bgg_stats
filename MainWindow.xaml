@@ -17,7 +17,7 @@
                             <DataGridTextColumn Header="Date" Width="100" Binding="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid x:Name="lstResult" HorizontalAlignment="Left" Height="719" Margin="365,16,0,0" VerticalAlignment="Top" Width="608" ItemsSource="{DynamicResource Results}" AutoGenerateColumns="False">
+                    <DataGrid x:Name="lstResult" HorizontalAlignment="Left" Height="326" Margin="365,16,0,0" VerticalAlignment="Top" Width="608" ItemsSource="{DynamicResource Results}" AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Rating" Width="50" Binding="{Binding Rating}"/>
                             <DataGridTextColumn Header="Nickname" Width="200" Binding="{Binding Player.Nickname}"/>
@@ -25,7 +25,14 @@
                             <DataGridTextColumn Header="Score" Width="200" Binding="{Binding Score}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
+                    <chartingToolkit:Chart  Title="" VerticalAlignment="Top" Margin="365,361,10,0" Height="374">
+                        <chartingToolkit:Chart.LegendStyle>
+                            <Style TargetType="datavis:Legend">
+                                <Setter Property="Width" Value="0" />
+                            </Style>
+                        </chartingToolkit:Chart.LegendStyle>
+                        <chartingToolkit:ColumnSeries x:Name="chartAllGames" DependentValuePath="Value" IndependentValuePath="Key" IsSelectionEnabled="True" FlowDirection="LeftToRight"/>
+                    </chartingToolkit:Chart>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabStats" Header="All Players">
@@ -64,7 +71,7 @@
                                 <Setter Property="Width" Value="0" />
                             </Style>
                         </chartingToolkit:Chart.LegendStyle>
-                        <chartingToolkit:ColumnSeries x:Name="chartPositionRating" DependentValuePath="Value" IndependentValuePath="Key" IsSelectionEnabled="True" FlowDirection="LeftToRight" Margin="0,-53,0,-14"/>
+                        <chartingToolkit:ColumnSeries x:Name="chartPositionRating" DependentValuePath="Value" IndependentValuePath="Key" IsSelectionEnabled="True" FlowDirection="LeftToRight" />
                     </chartingToolkit:Chart>
                 </Grid>
             </TabItem>

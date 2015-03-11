@@ -103,6 +103,9 @@ namespace BGGStats
             calcStats = new CalculateStats(BGGPlays);
             lstPlayers.ItemsSource = calcStats.Stats.Select(s => s.Player.Nickname);
             Resources["Stats"] = calcStats.Stats;
+
+            //Charts
+            chartAllGames.ItemsSource = BGGPlays.GetGamesByDateRange(Plays.DateRange.YEAR);
         }
 
         void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
