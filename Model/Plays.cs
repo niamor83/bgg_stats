@@ -6,16 +6,21 @@ using System.Threading.Tasks;
 using System.Xml;
 using BGGStats.Helper;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace BGGStats.Model
 {
-    class Plays
-    {
+    class Plays {
+
+        private const string ALL_YEARS = "All";
         private static int id = 0;
         public string CurrentPlayerUsername { get; set; }
         public string CurrentPlayerNickname { get; set; }
-        public List<Play> AllPlays { get; private set;  }
+        public ObservableCollection<Play> AllPlays { get; private set; }
 
+        public ObservableCollection<Play> AllPlaysByYear { get; set; } 
+
+        public ObservableCollection<string> Years { get; private set; }
         public int TotalPlays { get; private set; }
 
         public ObservableCollection<KeyValuePair<string, int>> LocationCounts { get; set; }
@@ -23,9 +28,11 @@ namespace BGGStats.Model
 
         public Plays()
         {
-            AllPlays = new List<Play>();
+            AllPlaysByYear = new ObservableCollection<Play>();
+            AllPlays = new ObservableCollection<Play>();
             LocationCounts = new ObservableCollection<KeyValuePair<string, int>>();
             GameCounts = new ObservableCollection<KeyValuePair<string, int>>();
+            Years = new ObservableCollection<string>();
         }
 
         public void LoadPlays(XmlDocument xmlPlays)
@@ -39,7 +46,7 @@ namespace BGGStats.Model
                     Plays.id++;
                 }   
             }
-            TotalPlays = AllPlays.Count; 
+            TotalPlays = AllPlaysByYear.Count; 
         }
 
         private Play LoadPlay(XmlNode xmlPlay)
@@ -49,8 +56,8 @@ namespace BGGStats.Model
             play.BGGId = xmlPlay.TextAttribute("id");  
             play.Game = xmlPlay.SelectSingleNode("item").Attributes["name"].InnerText;
             play.Location = xmlPlay.TextAttribute("location").Trim();            
-            play.Date = DateTime.Parse(xmlPlay.TextAttribute("date")); //Assume that there is always a date...
             play.EditLink = String.Format(Resources.EditPlay, play.BGGId);
+            play.Date = DateTime.Parse(xmlPlay.TextAttribute("date")); //Assume that there is always a date...            
 
             bool hasAtLeastOnePlayer = false;
 
@@ -93,7 +100,7 @@ namespace BGGStats.Model
 
         public void ResetPlays()
         {
-            AllPlays.Clear();
+            AllPlaysByYear.Clear();
         }
 
         private bool LoadPlayer(XmlNode players, Play play, string playerName)
@@ -134,5 +141,41 @@ namespace BGGStats.Model
             return counter;
         }
 
+        //TODO : Should be calculated directly...
+        public void PopulateYears()
+        {
+            //Get all Years when everything is loaded 
+            Years.Add(ALL_YEARS);         
+            foreach (var year in AllPlays.GroupBy(p => p.Date.Year).Select(p => p.Key))
+            {
+                Years.Add(year.ToString());
+            }
+        }
+
+        public void FilterByYear(string year)
+        {
+            if (year == ALL_YEARS)
+            {
+                AllPlaysByYear = new ObservableCollection<Play>(AllPlays);                
+            }
+            else
+            {
+                AllPlaysByYear = new ObservableCollection<Play>(AllPlays.Where(p => p.Date.Year.Equals(Int32.Parse(year)))); //Assume that there are only numbers!
+            }
+            
+            CalculGamesAndLocationCounts();
+        }
+
+        private void CalculGamesAndLocationCounts()
+        {
+            LocationCounts.Clear();
+            GameCounts.Clear();
+
+            foreach (var play in AllPlaysByYear)
+            {
+                AddOrIncrementLocationCounts(LocationCounts, play.Location);
+                AddOrIncrementLocationCounts(GameCounts, play.Game);
+            }
+	    }
     }
 }

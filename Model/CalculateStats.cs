@@ -28,7 +28,7 @@ namespace BGGStats.Model
 
         private void GeneratePlayerStats(){
             Stats currentStat;
-            foreach(Play play in BGGPlays.AllPlays){
+            foreach(Play play in BGGPlays.AllPlaysByYear){
                 foreach (Play.RatingPlayer playerRating in play.Result)
                 {
                         // TODO : Not correct due to Dictionnary (possibilit to have multiple value for one rating). To be updated!!!

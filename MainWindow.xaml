@@ -187,5 +187,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="260,14,0,0" TextWrapping="Wrap" Text="Username" VerticalAlignment="Top"/>
 
         <ProgressBar x:Name="pbLoading" Visibility="Hidden" HorizontalAlignment="Left" Height="50" Margin="332,242,0,0" VerticalAlignment="Top" Width="600" Minimum="0" Maximum="100" />
+        <Label Content="Year" HorizontalAlignment="Left" Margin="1289,16,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="cboYear" HorizontalAlignment="Left" Margin="1340,16,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cboYear_SelectionChanged"/>
     </Grid>
 </Window>

@@ -68,9 +68,12 @@ namespace BGGStats
             btnImport.IsEnabled = true;
             txtNickname.IsEnabled = true;
             txtUsername.IsEnabled = true;
-            
+
+            cboYear.ItemsSource = BGGPlays.Years;
+            cboYear.SelectedIndex = 0;
+
             lblTotalPlays.Content = BGGPlays.TotalPlays;
-            lstGames.ItemsSource = BGGPlays.AllPlays;
+            lstGames.ItemsSource = BGGPlays.AllPlaysByYear;
             dgLocations.ItemsSource = BGGPlays.LocationCounts.OrderBy(l => l.Key);
             lblDistinctLocations.Content = BGGPlays.LocationCounts.Count;
             dgGames.ItemsSource = BGGPlays.GameCounts.OrderBy(l => l.Key);
@@ -81,7 +84,24 @@ namespace BGGStats
             //TODO : Static class or singleton 
             calcStats = new CalculateStats(BGGPlays);
             lstPlayers.ItemsSource = calcStats.Stats.Select(s => s.Player.Nickname);
-            //lstPlayers.DisplayMemberPath = "Player.Nickname";
+            Resources["Stats"] = calcStats.Stats;
+        }
+
+        private void UpdateDataByYear()
+        {
+            //TODO : Awful, should be done by using "NotifyPropertiesChanged"
+            lblTotalPlays.Content = BGGPlays.TotalPlays;
+            lstGames.ItemsSource = BGGPlays.AllPlaysByYear;
+            dgLocations.ItemsSource = BGGPlays.LocationCounts.OrderBy(l => l.Key);
+            lblDistinctLocations.Content = BGGPlays.LocationCounts.Count;
+            dgGames.ItemsSource = BGGPlays.GameCounts.OrderBy(l => l.Key);
+            lblDistinctGames.Content = BGGPlays.GameCounts.Count;
+            lblHIndex.Content = BGGPlays.GetHIndex();
+
+            //Calculate all Stats
+            //TODO : Static class or singleton 
+            calcStats = new CalculateStats(BGGPlays);
+            lstPlayers.ItemsSource = calcStats.Stats.Select(s => s.Player.Nickname);
             Resources["Stats"] = calcStats.Stats;
         }
 
@@ -117,9 +137,15 @@ namespace BGGStats
                 counter++;
                 response = serviceRequest.DownloadString(new Uri(String.Format("http://www.boardgamegeek.com/xmlapi2/plays?username={0}&page={1}", BGGPlays.CurrentPlayerUsername, counter)));
             }
-
-
+            //TODO : TO be refactored, shouldn't be there. It should be calculated automatically
+            BGGPlays.PopulateYears();
         }
+
+        private void cboYear_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            BGGPlays.FilterByYear(cboYear.SelectedItem.ToString());
+            UpdateDataByYear();
+        } 
 
         private void HyperLinkBehavior(RoutedEventArgs e)
         {
@@ -130,20 +156,22 @@ namespace BGGStats
         //TAB Details
         private void lstGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Resources["Results"] = BGGPlays.AllPlays.Single(p => p.Id == ((Play)lstGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+            if (lstGames.SelectedItem != null)
+            Resources["Results"] = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)lstGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
         }
 
 
         //TAB Players
         private void lstPlayers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            lstPlayerGames.ItemsSource = BGGPlays.AllPlays.Where(p => p.Result.Exists( n => n.Player.Nickname == (string)lstPlayers.SelectedItem));
+            if (lstPlayers.SelectedItem != null)
+                lstPlayerGames.ItemsSource = BGGPlays.AllPlaysByYear.Where(p => p.Result.Exists( n => n.Player.Nickname == (string)lstPlayers.SelectedItem));
         }
 
         private void lstPlayerGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(lstPlayerGames.SelectedItem != null)
-                Resources["PlayerResults"] = BGGPlays.AllPlays.Single(p => p.Id == ((Play)lstPlayerGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+                Resources["PlayerResults"] = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)lstPlayerGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -168,13 +196,13 @@ namespace BGGStats
         private void dgLocationGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dgLocationGames.SelectedItem != null)
-                dgLocationSelectedGame.ItemsSource = BGGPlays.AllPlays.Single(p => p.Id == ((Play)dgLocationGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+                dgLocationSelectedGame.ItemsSource = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)dgLocationGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
         }
 
         private void dgLocations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dgLocations.SelectedItem != null)
-                dgLocationGames.ItemsSource = BGGPlays.AllPlays.Where(p => p.Location.Equals(((KeyValuePair<string, int>)dgLocations.SelectedItem).Key, StringComparison.CurrentCultureIgnoreCase));
+                dgLocationGames.ItemsSource = BGGPlays.AllPlaysByYear.Where(p => p.Location.Equals(((KeyValuePair<string, int>)dgLocations.SelectedItem).Key, StringComparison.CurrentCultureIgnoreCase));
         }
 
 
@@ -184,20 +212,19 @@ namespace BGGStats
         private void dgGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dgGames.SelectedItem != null)
-                dgByGamesGame.ItemsSource = BGGPlays.AllPlays.Where(p => p.Game.Equals(((KeyValuePair<string, int>)dgGames.SelectedItem).Key, StringComparison.CurrentCultureIgnoreCase));
+                dgByGamesGame.ItemsSource = BGGPlays.AllPlaysByYear.Where(p => p.Game.Equals(((KeyValuePair<string, int>)dgGames.SelectedItem).Key, StringComparison.CurrentCultureIgnoreCase));
         }
 
         private void dgByGamesGame_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dgByGamesGame.SelectedItem != null)
-                dgByGameSelectedGame.ItemsSource = BGGPlays.AllPlays.Single(p => p.Id == ((Play)dgByGamesGame.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+                dgByGameSelectedGame.ItemsSource = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)dgByGamesGame.SelectedItem).Id).Result.OrderBy(p => p.Rating);
         }
 
 
         private void dgByGamesGame_Click(object sender, RoutedEventArgs e)
         {
             HyperLinkBehavior(e);
-        } 
-        
+        }        
     }
 }
