@@ -67,13 +67,16 @@ namespace BGGStats.Model
             play.Date = DateTime.Parse(xmlPlay.TextAttribute("date")); //Assume that there is always a date...            
 
             bool hasAtLeastOnePlayer = false;
+            bool hasAtLeastOneZero = false;
+            bool currentRatingIsZero;
 
             foreach (XmlNode playerOrTeam in xmlPlay.SelectNodes("players/player"))
             {
                 //Manage team separated by "/" (e.g. Cooperative games or "Team games" -> Time's up)
                 foreach (string playerName in playerOrTeam.TextAttribute("name").Split('/'))
                 {
-                    hasAtLeastOnePlayer = LoadPlayer(playerOrTeam, play, playerName);
+                    hasAtLeastOnePlayer = LoadPlayer(playerOrTeam, play, playerName, out currentRatingIsZero);
+                    hasAtLeastOneZero = hasAtLeastOneZero || currentRatingIsZero;
                 }                                
             }
 
@@ -81,6 +84,16 @@ namespace BGGStats.Model
             if (!hasAtLeastOnePlayer)
             {
                 play.Result.Add(new Play.RatingPlayer() { Rating = 0, Player = new Player() { Nickname = CurrentPlayerNickname, Username = CurrentPlayerUsername} });
+            }
+
+            //If there are some rating "0", but them in last position to be consistent in the "order"            
+            if (hasAtLeastOneZero && play.Result.Count(p => p.Rating == 0) < play.Result.Count())
+            {
+                int lastRating = play.Result.Max(r => r.Rating) + 1;
+                foreach (var lastPlayResult in play.Result.Where(r => r.Rating == 0))
+                {
+                    lastPlayResult.Rating = lastRating;
+                }
             }
 
             AddOrIncrementLocationCounts(LocationCounts, play.Location);
@@ -110,7 +123,7 @@ namespace BGGStats.Model
             AllPlaysByYear.Clear();
         }
 
-        private bool LoadPlayer(XmlNode players, Play play, string playerName)
+        private bool LoadPlayer(XmlNode players, Play play, string playerName, out bool ratingZero)
         {
             string ratingStr;
             int rating;
@@ -124,6 +137,8 @@ namespace BGGStats.Model
             //Means he wins => rating = 1
             if (players.TextAttribute("win") == "1")
                 rating = 1;
+
+            ratingZero = (rating == 0);
 
             name = playerName.Trim();
             username = players.TextAttribute("username");
