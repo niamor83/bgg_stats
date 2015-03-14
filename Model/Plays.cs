@@ -10,14 +10,16 @@ using System.ComponentModel;
 
 namespace BGGStats.Model
 {
-    class Plays {
+    class Plays
+    {
 
-        private const string ALL_YEARS = "All";
+        public const string ALL_YEARS = "All";
         private static int id = 0;
 
-        public enum DateRange {
-            MONTH,
-            YEAR
+        public enum DateRange
+        {
+            Month,
+            Year
         }
 
 
@@ -25,13 +27,15 @@ namespace BGGStats.Model
         public string CurrentPlayerNickname { get; set; }
         public ObservableCollection<Play> AllPlays { get; private set; }
 
-        public ObservableCollection<Play> AllPlaysByYear { get; set; } 
+        public ObservableCollection<Play> AllPlaysByYear { get; set; }
 
         public ObservableCollection<string> Years { get; private set; }
         public int TotalPlays { get; private set; }
 
         public ObservableCollection<KeyValuePair<string, int>> LocationCounts { get; set; }
         public ObservableCollection<KeyValuePair<string, int>> GameCounts { get; set; }
+
+        private ObservableCollection<KeyValuePair<string, int>> _gamesByDateRange;
 
         public Plays()
         {
@@ -40,30 +44,32 @@ namespace BGGStats.Model
             LocationCounts = new ObservableCollection<KeyValuePair<string, int>>();
             GameCounts = new ObservableCollection<KeyValuePair<string, int>>();
             Years = new ObservableCollection<string>();
+            _gamesByDateRange = new ObservableCollection<KeyValuePair<string, int>>();
         }
 
         public void LoadPlays(XmlDocument xmlPlays)
-        {            
+        {
             foreach (XmlNode play in xmlPlays.SelectNodes("//plays/play"))
             {
                 //Not optimal but not a big performance issue..
-                for (int i = 0; i < Int32.Parse(play.TextAttribute("quantity")); i++ )
+                for (int i = 0; i < Int32.Parse(play.TextAttribute("quantity")); i++)
                 {
                     AllPlays.Add(LoadPlay(play));
                     Plays.id++;
-                }   
+                }
             }
-            TotalPlays = AllPlaysByYear.Count; 
+            TotalPlays = AllPlaysByYear.Count;
         }
 
         private Play LoadPlay(XmlNode xmlPlay)
         {
             Play play = new Play();
             play.Id = Plays.id.ToString();
-            play.BGGId = xmlPlay.TextAttribute("id");  
+            play.BGGId = xmlPlay.TextAttribute("id");
             play.Game = xmlPlay.SelectSingleNode("item").Attributes["name"].InnerText;
-            play.Location = xmlPlay.TextAttribute("location").Trim();            
+            play.Location = xmlPlay.TextAttribute("location").Trim();
             play.EditLink = String.Format(Resources.EditPlay, play.BGGId);
+            play.Comments = xmlPlay.SelectSingleNode("comments") == null ? String.Empty : xmlPlay.SelectSingleNode("comments").InnerText;
             play.Date = DateTime.Parse(xmlPlay.TextAttribute("date")); //Assume that there is always a date...            
 
             bool hasAtLeastOnePlayer = false;
@@ -77,13 +83,13 @@ namespace BGGStats.Model
                 {
                     hasAtLeastOnePlayer = LoadPlayer(playerOrTeam, play, playerName, out currentRatingIsZero);
                     hasAtLeastOneZero = hasAtLeastOneZero || currentRatingIsZero;
-                }                                
+                }
             }
 
             //If empty, the current game has to be added in the total of the player
             if (!hasAtLeastOnePlayer)
             {
-                play.Result.Add(new Play.RatingPlayer() { Rating = 0, Player = new Player() { Nickname = CurrentPlayerNickname, Username = CurrentPlayerUsername} });
+                play.Result.Add(new Play.RatingPlayer() { Rating = 0, Player = new Player() { Nickname = CurrentPlayerNickname, Username = CurrentPlayerUsername } });
             }
 
             //If there are some rating "0", but them in last position to be consistent in the "order"            
@@ -105,7 +111,7 @@ namespace BGGStats.Model
         private void AddOrIncrementLocationCounts(ObservableCollection<KeyValuePair<string, int>> locationCounts, string location)
         {
             //TODO remove count which is not efficient
-            if (locationCounts.Count(k => k.Key.Equals(location, StringComparison.CurrentCultureIgnoreCase) ) > 0)
+            if (locationCounts.Count(k => k.Key.Equals(location, StringComparison.CurrentCultureIgnoreCase)) > 0)
             {
                 //Assume that there is only on entry...
                 int oldValue = locationCounts.Single(k => k.Key.Equals(location, StringComparison.CurrentCultureIgnoreCase)).Value;
@@ -115,7 +121,7 @@ namespace BGGStats.Model
             else
             {
                 locationCounts.Add(new KeyValuePair<string, int>(location, 1));
-            }    
+            }
         }
 
         public void ResetPlays()
@@ -130,7 +136,7 @@ namespace BGGStats.Model
             string name;
             string username;
             string score;
-            
+
             ratingStr = players.TextAttribute("rating");
             rating = Int32.TryParse(ratingStr, out rating) ? rating : -1;
 
@@ -167,7 +173,7 @@ namespace BGGStats.Model
         public void PopulateYears()
         {
             //Get all Years when everything is loaded 
-            Years.Add(ALL_YEARS);         
+            Years.Add(ALL_YEARS);
             foreach (var year in AllPlays.GroupBy(p => p.Date.Year).Select(p => p.Key))
             {
                 Years.Add(year.ToString());
@@ -178,13 +184,13 @@ namespace BGGStats.Model
         {
             if (year == ALL_YEARS)
             {
-                AllPlaysByYear = new ObservableCollection<Play>(AllPlays);                
+                AllPlaysByYear = new ObservableCollection<Play>(AllPlays);
             }
             else
             {
                 AllPlaysByYear = new ObservableCollection<Play>(AllPlays.Where(p => p.Date.Year.Equals(Int32.Parse(year)))); //Assume that there are only numbers!
             }
-            
+
             CalculGamesAndLocationCounts();
         }
 
@@ -198,27 +204,39 @@ namespace BGGStats.Model
                 AddOrIncrementLocationCounts(LocationCounts, play.Location);
                 AddOrIncrementLocationCounts(GameCounts, play.Game);
             }
-	    }
+        }
 
-        public List<KeyValuePair<string, int>> GetGamesByDateRange(DateRange dateRange)
+        public ObservableCollection<KeyValuePair<string, int>> GetGamesByDateRange(DateRange dateRange, string year = ALL_YEARS)
         {
-            List<KeyValuePair<string, int>> GamesByDateRange = new List<KeyValuePair<string, int>>();
+            _gamesByDateRange.Clear();
 
             switch (dateRange)
             {
-                case DateRange.MONTH:
-                    break;
-                case DateRange.YEAR:
-                    //Skip the "All" value...
-                    foreach (var year in Years.OrderBy(y => y).Take(Years.Count - 1))
+                case DateRange.Month:
+                    List<string> allYears;
+                    if (year == ALL_YEARS)
+                        allYears = Years.OrderBy(y => y).Take(Years.Count - 1).ToList();
+                    else
+                        allYears = new List<string>() { year };
+
+                    foreach (var currentYear in allYears)
                     {
-                        GamesByDateRange.AddOrUpdate(year, AllPlays.Count(p => p.Date.Year.Equals(Int32.Parse(year))));
+                        for (int month = 1; month <= 12; month++)
+                        {
+                            _gamesByDateRange.AddOrUpdate(String.Concat(month, " ", currentYear), AllPlays.Count(p => (p.Date.Year.Equals(Int32.Parse(currentYear)) && p.Date.Month.Equals(month))));
+                        }
+                    }
+                    break;
+                case DateRange.Year:
+                    foreach (var currentYear in Years.OrderBy(y => y).Take(Years.Count - 1))
+                    {
+                        _gamesByDateRange.AddOrUpdate(currentYear, AllPlays.Count(p => p.Date.Year.Equals(Int32.Parse(currentYear))));
                     }
                     break;
                 default:
                     break;
             }
-            return GamesByDateRange;
+            return _gamesByDateRange;
         }
     }
 }

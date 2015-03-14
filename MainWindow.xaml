@@ -33,6 +33,7 @@
                         </chartingToolkit:Chart.LegendStyle>
                         <chartingToolkit:ColumnSeries x:Name="chartAllGames" DependentValuePath="Value" IndependentValuePath="Key" IsSelectionEnabled="True" FlowDirection="LeftToRight"/>
                     </chartingToolkit:Chart>
+                    <TextBox x:Name="txtCommentAllGAmes" HorizontalAlignment="Left" Height="326" Margin="996,16,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="429" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabStats" Header="All Players">
@@ -194,7 +195,9 @@
         <TextBlock HorizontalAlignment="Left" Margin="260,14,0,0" TextWrapping="Wrap" Text="Username" VerticalAlignment="Top"/>
 
         <ProgressBar x:Name="pbLoading" Visibility="Hidden" HorizontalAlignment="Left" Height="50" Margin="332,242,0,0" VerticalAlignment="Top" Width="600" Minimum="0" Maximum="100" />
-        <Label Content="Year" HorizontalAlignment="Left" Margin="1289,16,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="cboYear" HorizontalAlignment="Left" Margin="1340,16,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cboYear_SelectionChanged"/>
+        <Label Content="Year" HorizontalAlignment="Left" Margin="1036,14,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="cboYear" HorizontalAlignment="Left" Margin="1087,14,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cboYear_SelectionChanged"/>
+        <TextBlock HorizontalAlignment="Left" Margin="1244,19,0,0" TextWrapping="Wrap" Text="Chart range by " VerticalAlignment="Top"/>
+        <ComboBox x:Name="cboChartRange" HorizontalAlignment="Left" Margin="1340,14,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cboChartRange_SelectionChanged"/>
     </Grid>
 </Window>

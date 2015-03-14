@@ -22,6 +22,7 @@ namespace BGGStats.Model
         public string EditLink { get; set; }
         public DateTime Date { get; set; }
         public string Location { get; set; }
+        public string Comments { get; set; }
 
         public List<RatingPlayer> Result { get; set; }
 

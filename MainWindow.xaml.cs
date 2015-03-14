@@ -72,6 +72,13 @@ namespace BGGStats
             cboYear.ItemsSource = BGGPlays.Years;
             cboYear.SelectedIndex = 0;
 
+            cboChartRange.ItemsSource = Enum.GetValues(typeof(Plays.DateRange));
+
+            if (cboYear.SelectedItem == Plays.ALL_YEARS)
+                cboChartRange.SelectedItem = Plays.DateRange.Year;
+            else
+                cboChartRange.SelectedItem = Plays.DateRange.Month;
+
             lblTotalPlays.Content = BGGPlays.TotalPlays;
             lstGames.ItemsSource = BGGPlays.AllPlaysByYear;
             dgLocations.ItemsSource = BGGPlays.LocationCounts.OrderBy(l => l.Key);
@@ -105,7 +112,13 @@ namespace BGGStats
             Resources["Stats"] = calcStats.Stats;
 
             //Charts
-            chartAllGames.ItemsSource = BGGPlays.GetGamesByDateRange(Plays.DateRange.YEAR);
+            //chartAllGames.ItemsSource = BGGPlays.GetGamesByDateRange(Plays.DateRange.Year);
+        }
+
+        private void UpdateMonthsYearsChart()
+        {
+            if (cboChartRange.SelectedItem != null & cboYear.SelectedItem != null)
+                chartAllGames.ItemsSource = BGGPlays.GetGamesByDateRange(((Plays.DateRange)cboChartRange.SelectedItem), (string)cboYear.SelectedItem); 
         }
 
         void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -148,7 +161,13 @@ namespace BGGStats
         {
             BGGPlays.FilterByYear(cboYear.SelectedItem.ToString());
             UpdateDataByYear();
-        } 
+            UpdateMonthsYearsChart();
+        }
+
+        private void cboChartRange_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateMonthsYearsChart();
+        }
 
         private void HyperLinkBehavior(RoutedEventArgs e)
         {
@@ -156,13 +175,13 @@ namespace BGGStats
             Process.Start(link.NavigateUri.AbsoluteUri);
         }
 
-        //TAB Details
+        //TAB All Games
         private void lstGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (lstGames.SelectedItem != null)
             Resources["Results"] = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)lstGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+            txtCommentAllGAmes.Text = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)lstGames.SelectedItem).Id).Comments;
         }
-
 
         //TAB Players
         private void lstPlayers_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -228,6 +247,7 @@ namespace BGGStats
         private void dgByGamesGame_Click(object sender, RoutedEventArgs e)
         {
             HyperLinkBehavior(e);
-        }        
+        }
+   
     }
 }
