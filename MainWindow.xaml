@@ -11,18 +11,18 @@
             <TabItem x:Name="tabDetails" Header="All Games">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
 
-                    <DataGrid x:Name="lstGames" HorizontalAlignment="Left" Height="719" Margin="10,16,0,0" VerticalAlignment="Top" Width="335" SelectionChanged="lstGames_SelectionChanged" AutoGenerateColumns="False">
+                    <DataGrid x:Name="lstGames" HorizontalAlignment="Left" Height="719" Margin="10,16,0,0" VerticalAlignment="Top" Width="335" SelectionChanged="lstGames_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Game" Width="200" Binding="{Binding Game}"/>
-                            <DataGridTextColumn Header="Date" Width="100" Binding="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}"/>
+                            <DataGridTextColumn Header="Date" Width="*" Binding="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid x:Name="lstResult" HorizontalAlignment="Left" Height="326" Margin="365,16,0,0" VerticalAlignment="Top" Width="608" ItemsSource="{DynamicResource Results}" AutoGenerateColumns="False">
+                    <DataGrid x:Name="lstResult" HorizontalAlignment="Left" Height="326" Margin="365,16,0,0" VerticalAlignment="Top" Width="608" ItemsSource="{DynamicResource Results}" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Rating" Width="50" Binding="{Binding Rating}"/>
                             <DataGridTextColumn Header="Nickname" Width="200" Binding="{Binding Player.Nickname}"/>
                             <DataGridTextColumn Header="Username" Width="150" Binding="{Binding Player.Username}"/>
-                            <DataGridTextColumn Header="Score" Width="200" Binding="{Binding Score}"/>
+                            <DataGridTextColumn Header="Score" Width="*" Binding="{Binding Score}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <chartingToolkit:Chart  Title="" VerticalAlignment="Top" Margin="365,361,10,0" Height="374">
@@ -38,7 +38,7 @@
             </TabItem>
             <TabItem x:Name="tabStats" Header="All Players">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,-61">
-                    <DataGrid x:Name="lstStatsPlayers" HorizontalAlignment="Left" Height="711" Margin="10,10,0,0" VerticalAlignment="Top" Width="929" ItemsSource="{DynamicResource Stats}" SelectionChanged="ListView_SelectionChanged" AutoGenerateColumns="False">
+                    <DataGrid x:Name="lstStatsPlayers" HorizontalAlignment="Left" Height="711" Margin="10,10,0,0" VerticalAlignment="Top" Width="929" ItemsSource="{DynamicResource Stats}" SelectionChanged="ListView_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Player" Width="200" Binding="{Binding Player.Nickname}"/>
                             <DataGridTextColumn Header="Total Plays" Width="80" Binding="{Binding NbPlays}"/>
@@ -78,14 +78,20 @@
             </TabItem>
             <TabItem x:Name="tabByPlayer" Header="By Player">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
-                    <ListBox x:Name="lstPlayers" HorizontalAlignment="Left" Height="391" Margin="10,37,0,0" VerticalAlignment="Top" Width="205" SelectionChanged="lstPlayers_SelectionChanged"/>
-                    <DataGrid x:Name="lstPlayerGames" HorizontalAlignment="Left" Height="391" Margin="243,42,0,0" VerticalAlignment="Top" Width="318" SelectionChanged="lstPlayerGames_SelectionChanged" AutoGenerateColumns="False">
+                    <DataGrid x:Name="lstPlayers" HorizontalAlignment="Left" Height="726" Margin="10,19,0,0" VerticalAlignment="Top" Width="228" SelectionChanged="lstPlayers_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Player" Width="150" Binding="{Binding Player.Nickname}"/>
+                            <DataGridTextColumn Header="Plays" Width="*" Binding="{Binding NbPlays}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid x:Name="lstPlayerGames" HorizontalAlignment="Left" Height="726" Margin="254,19,0,0" VerticalAlignment="Top" Width="318" SelectionChanged="lstPlayerGames_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Resources>
                             <sys:String x:Key="edit">Edit</sys:String>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Game" Width="250" Binding="{Binding Game}"/>
-                            <DataGridHyperlinkColumn Header="Edit" Width="70" Binding="{Binding EditLink}" ContentBinding="{Binding Source={StaticResource edit}}">
+                            <DataGridTextColumn Header="Game" Width="200" Binding="{Binding Game}"/>
+                            <DataGridTextColumn Header="Rating" Width="50" Binding="{Binding CurrentUserRating}"/>                            
+                            <DataGridHyperlinkColumn Header="Edit" Width="*" Binding="{Binding EditLink}" ContentBinding="{Binding Source={StaticResource edit}}">
                                 <DataGridHyperlinkColumn.ElementStyle>
                                     <Style>
                                         <EventSetter Event="Hyperlink.Click" Handler="lstPlayerGames_Click"/>
@@ -94,37 +100,32 @@
                             </DataGridHyperlinkColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <ListView x:Name="lstPlayerResults" HorizontalAlignment="Left" Height="374" Margin="584,37,0,0" VerticalAlignment="Top" Width="343" ItemsSource="{DynamicResource PlayerResults}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Rating"
-									DisplayMemberBinding="{Binding Rating}" />
-                                <GridViewColumn Header="Nickname"
-									DisplayMemberBinding="{Binding Player.Nickname}" />
-                                <GridViewColumn Header="Username"
-									DisplayMemberBinding="{Binding Player.Username}" />
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                    <Label Content="Total plays : " Margin="284,433,576,57" />
-                    <Label x:Name="lblTotalPlayerPlays" Content="{Binding Items.Count, ElementName=lstPlayerGames, Mode=OneWay}"  Width="100"  FontWeight="Bold" Margin="395,433,507,57"/>
+                    <DataGrid x:Name="lstPlayerResults" HorizontalAlignment="Left" Height="326" Margin="588,19,0,0" VerticalAlignment="Top" Width="393" ItemsSource="{DynamicResource PlayerResults}" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Rating" Width="50" Binding="{Binding Rating}"/>
+                            <DataGridTextColumn Header="Nickname" Width="150" Binding="{Binding Player.Nickname}"/>
+                            <DataGridTextColumn Header="Username" Width="100" Binding="{Binding Player.Username}"/>
+                            <DataGridTextColumn Header="Score" Width="*" Binding="{Binding Score}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <TextBox x:Name="txtCommentByPlayer" HorizontalAlignment="Left" Height="326" Margin="995,19,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="429" ScrollViewer.VerticalScrollBarVisibility="Auto" />
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabByLocation" Header="By Location">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
-                    <DataGrid x:Name="dgLocations" HorizontalAlignment="Left" Margin="46,42,0,0" VerticalAlignment="Top" Height="652" Width="342" AutoGenerateColumns="False" SelectionChanged="dgLocations_SelectionChanged">
+                    <DataGrid x:Name="dgLocations" HorizontalAlignment="Left" Margin="46,42,0,0" VerticalAlignment="Top" Height="652" Width="342" AutoGenerateColumns="False" SelectionChanged="dgLocations_SelectionChanged" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Location" Width="250" Binding="{Binding Key}"/>
-                            <DataGridTextColumn Header="Counts" Width="60" Binding="{Binding Value}"/>
+                            <DataGridTextColumn Header="Counts" Width="*" Binding="{Binding Value}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid x:Name="dgLocationGames" HorizontalAlignment="Left" Height="652" Margin="408,42,0,0" VerticalAlignment="Top" Width="366" SelectionChanged="dgLocationGames_SelectionChanged" AutoGenerateColumns="False">
+                    <DataGrid x:Name="dgLocationGames" HorizontalAlignment="Left" Height="652" Margin="408,42,0,0" VerticalAlignment="Top" Width="366" SelectionChanged="dgLocationGames_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Resources>
                             <sys:String x:Key="edit">Edit</sys:String>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Game" Width="250" Binding="{Binding Game}"/>
-                            <DataGridHyperlinkColumn Header="Edit" Width="70" Binding="{Binding EditLink}" ContentBinding="{Binding Source={StaticResource edit}}">
+                            <DataGridHyperlinkColumn Header="Edit" Width="*" Binding="{Binding EditLink}" ContentBinding="{Binding Source={StaticResource edit}}">
                                 <DataGridHyperlinkColumn.ElementStyle>
                                     <Style>
                                         <EventSetter Event="Hyperlink.Click" Handler="dgLocationGames_Click"/>
@@ -133,7 +134,7 @@
                             </DataGridHyperlinkColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid x:Name="dgLocationSelectedGame" HorizontalAlignment="Left" Height="652" Margin="802,42,0,0" VerticalAlignment="Top" Width="468" SelectionChanged="dgLocationGames_SelectionChanged" AutoGenerateColumns="False">
+                    <DataGrid x:Name="dgLocationSelectedGame" HorizontalAlignment="Left" Height="652" Margin="802,42,0,0" VerticalAlignment="Top" Width="468" SelectionChanged="dgLocationGames_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Resources>
                             <sys:String x:Key="edit">Edit</sys:String>
                         </DataGrid.Resources>
@@ -141,7 +142,7 @@
                             <DataGridTextColumn Header="Rating" Width="50" Binding="{Binding Rating}"/>
                             <DataGridTextColumn Header="Nickname" Width="150" Binding="{Binding Player.Nickname}"/>
                             <DataGridTextColumn Header="Username" Width="100" Binding="{Binding Player.Username}"/>
-                            <DataGridTextColumn Header="Score" Width="100" Binding="{Binding Score}"/>
+                            <DataGridTextColumn Header="Score" Width="*" Binding="{Binding Score}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <Label Content="Different locations : " HorizontalAlignment="Left" Margin="46,699,0,0" VerticalAlignment="Top"/>
@@ -150,19 +151,19 @@
             </TabItem>
             <TabItem x:Name="tabByGame" Header="By Game">
                 <Grid Background="#FFE5E5E5" Margin="10,2,-10,-2">
-                    <DataGrid x:Name="dgGames" HorizontalAlignment="Left" Margin="46,42,0,0" VerticalAlignment="Top" Height="652" Width="342" AutoGenerateColumns="False" SelectionChanged="dgGames_SelectionChanged">
+                    <DataGrid x:Name="dgGames" HorizontalAlignment="Left" Margin="46,42,0,0" VerticalAlignment="Top" Height="652" Width="342" AutoGenerateColumns="False" SelectionChanged="dgGames_SelectionChanged" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Location" Width="250" Binding="{Binding Key}"/>
-                            <DataGridTextColumn Header="Counts" Width="60" Binding="{Binding Value}"/>
+                            <DataGridTextColumn Header="Counts" Width="*" Binding="{Binding Value}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid x:Name="dgByGamesGame" HorizontalAlignment="Left" Height="296" Margin="408,42,0,0" VerticalAlignment="Top" Width="366" SelectionChanged="dgByGamesGame_SelectionChanged" AutoGenerateColumns="False">
+                    <DataGrid x:Name="dgByGamesGame" HorizontalAlignment="Left" Height="296" Margin="408,42,0,0" VerticalAlignment="Top" Width="366" SelectionChanged="dgByGamesGame_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Resources>
                             <sys:String x:Key="edit">Edit</sys:String>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Game" Width="250" Binding="{Binding Game}"/>
-                            <DataGridHyperlinkColumn Header="Edit" Width="70" Binding="{Binding EditLink}" ContentBinding="{Binding Source={StaticResource edit}}">
+                            <DataGridHyperlinkColumn Header="Edit" Width="*" Binding="{Binding EditLink}" ContentBinding="{Binding Source={StaticResource edit}}">
                                 <DataGridHyperlinkColumn.ElementStyle>
                                     <Style>
                                         <EventSetter Event="Hyperlink.Click" Handler="dgByGamesGame_Click"/>
@@ -171,7 +172,7 @@
                             </DataGridHyperlinkColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid x:Name="dgByGameSelectedGame" HorizontalAlignment="Left" Height="296" Margin="802,42,0,0" VerticalAlignment="Top" Width="468" AutoGenerateColumns="False">
+                    <DataGrid x:Name="dgByGameSelectedGame" HorizontalAlignment="Left" Height="296" Margin="802,42,0,0" VerticalAlignment="Top" Width="468" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Resources>
                             <sys:String x:Key="edit">Edit</sys:String>
                         </DataGrid.Resources>
@@ -179,7 +180,7 @@
                             <DataGridTextColumn Header="Rating" Width="50" Binding="{Binding Rating}"/>
                             <DataGridTextColumn Header="Nickname" Width="150" Binding="{Binding Player.Nickname}"/>
                             <DataGridTextColumn Header="Username" Width="100" Binding="{Binding Player.Username}"/>
-                            <DataGridTextColumn Header="Score" Width="100" Binding="{Binding Score}"/>
+                            <DataGridTextColumn Header="Score" Width="*" Binding="{Binding Score}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <Label Content="Different games : " HorizontalAlignment="Left" Margin="46,699,0,0" VerticalAlignment="Top"/>

@@ -44,6 +44,8 @@ namespace BGGStats
             btnImport.IsEnabled = false;
             txtNickname.IsEnabled = false;
             txtUsername.IsEnabled = false;
+            cboChartRange.IsEnabled = false;
+            cboYear.IsEnabled = false;
 
             //TODO : Use configuration file to keep last user  
             BGGPlays.CurrentPlayerUsername = txtUsername.Text;
@@ -68,6 +70,8 @@ namespace BGGStats
             btnImport.IsEnabled = true;
             txtNickname.IsEnabled = true;
             txtUsername.IsEnabled = true;
+            cboChartRange.IsEnabled = true;
+            cboYear.IsEnabled = true;
 
             cboYear.ItemsSource = BGGPlays.Years;
             cboYear.SelectedIndex = 0;
@@ -79,19 +83,21 @@ namespace BGGStats
             else
                 cboChartRange.SelectedItem = Plays.DateRange.Month;
 
-            lblTotalPlays.Content = BGGPlays.TotalPlays;
-            lstGames.ItemsSource = BGGPlays.AllPlaysByYear;
-            dgLocations.ItemsSource = BGGPlays.LocationCounts.OrderBy(l => l.Key);
-            lblDistinctLocations.Content = BGGPlays.LocationCounts.Count;
-            dgGames.ItemsSource = BGGPlays.GameCounts.OrderBy(l => l.Key);
-            lblDistinctGames.Content = BGGPlays.GameCounts.Count;
-            lblHIndex.Content = BGGPlays.GetHIndex();
+            UpdateDataByYear();
 
-            //Calculate all Stats
-            //TODO : Static class or singleton 
-            calcStats = new CalculateStats(BGGPlays);
-            lstPlayers.ItemsSource = calcStats.Stats.Select(s => s.Player.Nickname);
-            Resources["Stats"] = calcStats.Stats;
+            //lblTotalPlays.Content = BGGPlays.TotalPlays;
+            //lstGames.ItemsSource = BGGPlays.AllPlaysByYear;
+            //dgLocations.ItemsSource = BGGPlays.LocationCounts.OrderBy(l => l.Key);
+            //lblDistinctLocations.Content = BGGPlays.LocationCounts.Count;
+            //dgGames.ItemsSource = BGGPlays.GameCounts.OrderBy(l => l.Key);
+            //lblDistinctGames.Content = BGGPlays.GameCounts.Count;
+            //lblHIndex.Content = BGGPlays.GetHIndex();
+
+            ////Calculate all Stats
+            ////TODO : Static class or singleton 
+            //calcStats = new CalculateStats(BGGPlays);
+            //lstPlayers.ItemsSource = calcStats.Stats;
+            //Resources["Stats"] = calcStats.Stats;
         }
 
         private void UpdateDataByYear()
@@ -108,7 +114,7 @@ namespace BGGStats
             //Calculate all Stats
             //TODO : Static class or singleton 
             calcStats = new CalculateStats(BGGPlays);
-            lstPlayers.ItemsSource = calcStats.Stats.Select(s => s.Player.Nickname);
+            lstPlayers.ItemsSource = calcStats.Stats;
             Resources["Stats"] = calcStats.Stats;
 
             //Charts
@@ -160,6 +166,10 @@ namespace BGGStats
         private void cboYear_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             BGGPlays.FilterByYear(cboYear.SelectedItem.ToString());
+
+            if (cboYear.SelectedItem.ToString() != Plays.ALL_YEARS)
+                cboChartRange.SelectedItem = Plays.DateRange.Month;
+
             UpdateDataByYear();
             UpdateMonthsYearsChart();
         }
@@ -179,21 +189,28 @@ namespace BGGStats
         private void lstGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (lstGames.SelectedItem != null)
-            Resources["Results"] = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)lstGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
-            txtCommentAllGAmes.Text = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)lstGames.SelectedItem).Id).Comments;
+                Resources["Results"] = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)lstGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+            
+            txtCommentAllGAmes.Text = (lstGames.SelectedItem == null) ? String.Empty : txtCommentAllGAmes.Text = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)lstGames.SelectedItem).Id).Comments;                            
         }
 
         //TAB Players
         private void lstPlayers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (lstPlayers.SelectedItem != null)
-                lstPlayerGames.ItemsSource = BGGPlays.AllPlaysByYear.Where(p => p.Result.Exists( n => n.Player.Nickname == (string)lstPlayers.SelectedItem));
+            {
+                string currentPlayer = ((Stats)lstPlayers.SelectedItem).Player.Nickname;
+                BGGPlays.AllPlaysByYear.Select(p => {p.CurrentUser = currentPlayer; return p;}).ToList();
+                lstPlayerGames.ItemsSource = BGGPlays.AllPlaysByYear.Where(p => p.Result.Exists(n => n.Player.Nickname == currentPlayer));
+            }                
         }
 
         private void lstPlayerGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(lstPlayerGames.SelectedItem != null)
                 Resources["PlayerResults"] = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)lstPlayerGames.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+
+            txtCommentByPlayer.Text = (lstPlayerGames.SelectedItem == null) ? String.Empty : txtCommentByPlayer.Text = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)lstPlayerGames.SelectedItem).Id).Comments;                            
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

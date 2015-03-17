@@ -26,10 +26,18 @@ namespace BGGStats.Model
 
         public List<RatingPlayer> Result { get; set; }
 
+
+        //TODO Should be refactor, Should not mix different business rules in one class...
+        public string CurrentUser { set; private get; }
+
+        public int CurrentUserRating 
+        {
+            get { return Result.Where(r => r.Player.Nickname == CurrentUser).Select(r => r.Rating).FirstOrDefault(); }
+        }
+
         public Play()
         {
             Result = new List<RatingPlayer>();
         }
-
     }
 }
