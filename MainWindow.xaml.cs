@@ -1,6 +1,8 @@
 ﻿using BGGStats.Model;
+using LiveCharts;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -29,10 +31,13 @@ namespace BGGStats
     {
         Plays BGGPlays = new Plays();
         CalculateStats calcStats;
+        public SeriesCollection Series { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
+            Series = new SeriesCollection();
+            DataContext = this;
         }
 
         private void btnImport_Click(object sender, RoutedEventArgs e)
@@ -124,7 +129,39 @@ namespace BGGStats
         private void UpdateMonthsYearsChart()
         {
             if (cboChartRange.SelectedItem != null & cboYear.SelectedItem != null)
-                chartAllGames.ItemsSource = BGGPlays.GetGamesByDateRange(((Plays.DateRange)cboChartRange.SelectedItem), (string)cboYear.SelectedItem); 
+            {
+                var selectedYear = (string)cboYear.SelectedItem;
+                var selectChart = ((Plays.DateRange)cboChartRange.SelectedItem);
+                var playedYears = BGGPlays.GetGamesByDateRange(selectChart, selectedYear);
+                Series.Clear();
+                ChartValues<double> values = new ChartValues<double>();
+
+                chByYear.AxisX.Clear();
+
+
+                //For Months
+                if (selectChart == Plays.DateRange.Month)
+                {
+                    chByYear.AxisX.Add(new Axis { Title = "Mois", Labels = new List<string>() { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" } });
+
+                    foreach (var playedYear in playedYears)
+                    {
+                        values.Add(playedYear.Value);
+                    }
+                    Series.Add(new BarSeries { Title = selectedYear, Values = values });
+
+                }
+                //For Years
+                else
+                {
+                    chByYear.AxisX.Add(new Axis { Title = "Année" });
+
+                    foreach (var playedYear in playedYears)
+                    {
+                        Series.Add(new BarSeries { Title = playedYear.Key, Values = new ChartValues<double> { playedYear.Value } });
+                    }
+                }
+            }
         }
 
         void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)

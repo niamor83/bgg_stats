@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" x:Class="BGGStats.MainWindow"
+        xmlns:lvc="clr-namespace:LiveCharts;assembly=LiveCharts"
         xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         Title="BGG - Stats" Height="900" Width="1500">
     <Grid Margin="0,0,2,1" x:Name="gdGlobal">
@@ -25,15 +26,16 @@
                             <DataGridTextColumn Header="Score" Width="*" Binding="{Binding Score}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <chartingToolkit:Chart  Title="" VerticalAlignment="Top" Margin="365,361,10,0" Height="374">
-                        <chartingToolkit:Chart.LegendStyle>
-                            <Style TargetType="datavis:Legend">
-                                <Setter Property="Width" Value="0" />
-                            </Style>
-                        </chartingToolkit:Chart.LegendStyle>
-                        <chartingToolkit:ColumnSeries x:Name="chartAllGames" DependentValuePath="Value" IndependentValuePath="Key" IsSelectionEnabled="True" FlowDirection="LeftToRight"/>
-                    </chartingToolkit:Chart>
                     <TextBox x:Name="txtCommentAllGAmes" HorizontalAlignment="Left" Height="326" Margin="996,16,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="429" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                    <lvc:BarChart x:Name="chByYear" Series="{Binding Series}" LegendLocation="Right" VerticalAlignment="Top" Margin="365,361,10,0" Height="374" >
+                        <lvc:BarChart.AxisY>
+                            <lvc:Axis Title="Plays" />
+                        </lvc:BarChart.AxisY>
+                        <lvc:BarChart.AxisX>
+                            <lvc:Axis Title="Month"
+                        		Labels="Jan, Feb , Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec" />
+                        </lvc:BarChart.AxisX>
+                    </lvc:BarChart>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabStats" Header="All Players">
@@ -90,7 +92,7 @@
                         </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Game" Width="200" Binding="{Binding Game}"/>
-                            <DataGridTextColumn Header="Rating" Width="50" Binding="{Binding CurrentUserRating}"/>                            
+                            <DataGridTextColumn Header="Rating" Width="50" Binding="{Binding CurrentUserRating}"/>
                             <DataGridHyperlinkColumn Header="Edit" Width="*" Binding="{Binding EditLink}" ContentBinding="{Binding Source={StaticResource edit}}">
                                 <DataGridHyperlinkColumn.ElementStyle>
                                     <Style>
