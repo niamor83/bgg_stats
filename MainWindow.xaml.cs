@@ -202,7 +202,7 @@ namespace BGGStats
 
         private void cboYear_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            BGGPlays.FilterByYear(cboYear.SelectedItem.ToString());
+            BGGPlays.FilterByPlayerAndYear(txtFilterByPlayer.Text, cboYear.SelectedItem.ToString());
 
             if (cboYear.SelectedItem.ToString() != Plays.ALL_YEARS)
                 cboChartRange.SelectedItem = Plays.DateRange.Month;
@@ -261,6 +261,14 @@ namespace BGGStats
             HyperLinkBehavior(e);
         }
 
+        private void txtFilterByPlayer_KeyUp(object sender, KeyEventArgs e)
+        {
+            BGGPlays.FilterByPlayerAndYear(txtFilterByPlayer.Text, cboYear.SelectedItem.ToString());
+
+            UpdateDataByYear();
+            UpdateMonthsYearsChart();
+        }
+
         //TAB Locations
         //TODO : Refactor, duplicate useless code
         //TODO : Update variables names...
@@ -302,6 +310,5 @@ namespace BGGStats
         {
             HyperLinkBehavior(e);
         }
-   
     }
 }

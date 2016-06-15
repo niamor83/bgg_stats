@@ -40,7 +40,7 @@
             </TabItem>
             <TabItem x:Name="tabStats" Header="All Players">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,-61">
-                    <DataGrid x:Name="lstStatsPlayers" HorizontalAlignment="Left" Height="711" Margin="10,10,0,0" VerticalAlignment="Top" Width="929" ItemsSource="{DynamicResource Stats}" SelectionChanged="ListView_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid x:Name="lstStatsPlayers" HorizontalAlignment="Left" Height="675" Margin="10,46,0,0" VerticalAlignment="Top" Width="929" ItemsSource="{DynamicResource Stats}" SelectionChanged="ListView_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Player" Width="200" Binding="{Binding Player.Nickname}"/>
                             <DataGridTextColumn Header="Total Plays" Width="80" Binding="{Binding NbPlays}"/>
@@ -64,7 +64,8 @@
                             <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbUndefinedPercent, StringFormat=P0}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
+                    <TextBlock HorizontalAlignment="Left" Margin="15,13,0,0" TextWrapping="Wrap" Text="Filter by this player : " VerticalAlignment="Top"/>
+                    <TextBox x:Name="txtFilterByPlayer" HorizontalAlignment="Left" Height="23" Margin="129,12,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" KeyUp="txtFilterByPlayer_KeyUp"/>
                     <Label Content="Total plays : " Margin="10,726,880,79"/>
                     <Label x:Name="lblTotalPlays" Content="" Width="100" Margin="129,728,1215,79" FontWeight="Bold"/>
                     <chartingToolkit:Chart  Name="pieChart" Title="" 
@@ -202,5 +203,6 @@
         <ComboBox x:Name="cboYear" HorizontalAlignment="Left" Margin="1087,14,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cboYear_SelectionChanged"/>
         <TextBlock HorizontalAlignment="Left" Margin="1244,19,0,0" TextWrapping="Wrap" Text="Chart range by " VerticalAlignment="Top"/>
         <ComboBox x:Name="cboChartRange" HorizontalAlignment="Left" Margin="1340,14,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cboChartRange_SelectionChanged"/>
+
     </Grid>
 </Window>

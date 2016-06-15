@@ -182,6 +182,7 @@ namespace BGGStats.Model
 
         public void FilterByYear(string year)
         {
+            //TODO : Refactor -> Duplicated CODE!
             if (year == ALL_YEARS)
             {
                 AllPlaysByYear = new ObservableCollection<Play>(AllPlays);
@@ -192,6 +193,27 @@ namespace BGGStats.Model
             }
 
             CalculGamesAndLocationCounts();
+        }
+
+        public void FilterByPlayerAndYear(string player, string year)
+        {
+            if (String.IsNullOrEmpty(player))
+            {
+                FilterByYear(year);
+                return;
+            }
+               
+
+            //TODO : Refactor -> Duplicated CODE!
+            if (year == ALL_YEARS)
+            {
+                AllPlaysByYear = new ObservableCollection<Play>(AllPlays.Where(p => p.Result.Any(r => r.Player.Nickname.Equals(player, StringComparison.CurrentCultureIgnoreCase))));
+            }
+            else
+            {
+                AllPlaysByYear = new ObservableCollection<Play>(AllPlays.Where(p => p.Date.Year.Equals(Int32.Parse(year))).Where(p => p.Result.Any(r => r.Player.Nickname == player))); //Assume that there are only numbers! for years...
+            }
+            
         }
 
         private void CalculGamesAndLocationCounts()
@@ -205,6 +227,8 @@ namespace BGGStats.Model
                 AddOrIncrementLocationCounts(GameCounts, play.Game);
             }
         }
+
+
 
         public ObservableCollection<KeyValuePair<string, int>> GetGamesByDateRange(DateRange dateRange, string year = ALL_YEARS)
         {
