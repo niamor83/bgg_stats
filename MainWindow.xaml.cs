@@ -113,6 +113,7 @@ namespace BGGStats
             dgLocations.ItemsSource = BGGPlays.LocationCounts.OrderBy(l => l.Key);
             lblDistinctLocations.Content = BGGPlays.LocationCounts.Count;
             dgGames.ItemsSource = BGGPlays.GameCounts.OrderBy(l => l.Key);
+            dgNbPlayers.ItemsSource = BGGPlays.NbPlayersCounts.OrderBy(l => l.Key);
             lblDistinctGames.Content = BGGPlays.GameCounts.Count;
             lblHIndex.Content = BGGPlays.GetHIndex();
 
@@ -310,5 +311,27 @@ namespace BGGStats
         {
             HyperLinkBehavior(e);
         }
+
+        //TAB Nb Players
+        //TODO : Refactor, duplicate useless code
+        private void dgNbPlayers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgNbPlayers.SelectedItem != null)
+                dgNbPlayersGame.ItemsSource = BGGPlays.AllPlaysByYear.Where(p => p.Result.Count == Int32.Parse(((KeyValuePair<string, int>)dgNbPlayers.SelectedItem).Key));
+        }
+
+        private void dgNbPlayersGame_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgNbPlayersGame.SelectedItem != null)
+                dgNbPlayersSelectedGame.ItemsSource = BGGPlays.AllPlaysByYear.Single(p => p.Id == ((Play)dgNbPlayersGame.SelectedItem).Id).Result.OrderBy(p => p.Rating);
+        }
+
+
+        private void dgNbPlayersGame_Click(object sender, RoutedEventArgs e)
+        {
+            HyperLinkBehavior(e);
+        }
+
+
     }
 }

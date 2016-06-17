@@ -34,6 +34,7 @@ namespace BGGStats.Model
 
         public ObservableCollection<KeyValuePair<string, int>> LocationCounts { get; set; }
         public ObservableCollection<KeyValuePair<string, int>> GameCounts { get; set; }
+        public ObservableCollection<KeyValuePair<string, int>> NbPlayersCounts { get; set; }
 
         private ObservableCollection<KeyValuePair<string, int>> _gamesByDateRange;
 
@@ -43,6 +44,7 @@ namespace BGGStats.Model
             AllPlays = new ObservableCollection<Play>();
             LocationCounts = new ObservableCollection<KeyValuePair<string, int>>();
             GameCounts = new ObservableCollection<KeyValuePair<string, int>>();
+            NbPlayersCounts = new ObservableCollection<KeyValuePair<string, int>>();
             Years = new ObservableCollection<string>();
             _gamesByDateRange = new ObservableCollection<KeyValuePair<string, int>>();
         }
@@ -104,10 +106,12 @@ namespace BGGStats.Model
 
             AddOrIncrementLocationCounts(LocationCounts, play.Location);
             AddOrIncrementLocationCounts(GameCounts, play.Game);
+            AddOrIncrementLocationCounts(NbPlayersCounts, play.Result.Count.ToString());
 
             return play;
         }
 
+        //TODO : Refactor name ?
         private void AddOrIncrementLocationCounts(ObservableCollection<KeyValuePair<string, int>> locationCounts, string location)
         {
             //TODO remove count which is not efficient
@@ -225,6 +229,7 @@ namespace BGGStats.Model
             {
                 AddOrIncrementLocationCounts(LocationCounts, play.Location);
                 AddOrIncrementLocationCounts(GameCounts, play.Game);
+                AddOrIncrementLocationCounts(NbPlayersCounts, play.Result.Count.ToString());
             }
         }
 
