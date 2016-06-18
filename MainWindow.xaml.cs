@@ -88,6 +88,8 @@ namespace BGGStats
             else
                 cboChartRange.SelectedItem = Plays.DateRange.Month;
 
+            cboNbPlayers.ItemsSource = dgNbPlayers.ItemsSource = BGGPlays.NbPlayersCounts.OrderBy(l => l.Key).Select(s => s.Key);
+
             UpdateDataByYear();
 
             //lblTotalPlays.Content = BGGPlays.TotalPlays;
@@ -203,7 +205,7 @@ namespace BGGStats
 
         private void cboYear_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            BGGPlays.FilterByPlayerAndYear(txtFilterByPlayer.Text, cboYear.SelectedItem.ToString());
+            BGGPlays.FilterByPlayerYearNbPlayers(txtFilterByPlayer.Text, cboYear.SelectedItem.ToString(), (string)cboNbPlayers.SelectedItem);
 
             if (cboYear.SelectedItem.ToString() != Plays.ALL_YEARS)
                 cboChartRange.SelectedItem = Plays.DateRange.Month;
@@ -264,7 +266,15 @@ namespace BGGStats
 
         private void txtFilterByPlayer_KeyUp(object sender, KeyEventArgs e)
         {
-            BGGPlays.FilterByPlayerAndYear(txtFilterByPlayer.Text, cboYear.SelectedItem.ToString());
+            BGGPlays.FilterByPlayerYearNbPlayers(txtFilterByPlayer.Text, cboYear.SelectedItem.ToString(), (string)cboNbPlayers.SelectedItem);
+
+            UpdateDataByYear();
+            UpdateMonthsYearsChart();
+        }
+
+        private void cboNbPlayers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            BGGPlays.FilterByPlayerYearNbPlayers(txtFilterByPlayer.Text, cboYear.SelectedItem.ToString(), (string)cboNbPlayers.SelectedItem);
 
             UpdateDataByYear();
             UpdateMonthsYearsChart();
@@ -316,6 +326,8 @@ namespace BGGStats
         //TODO : Refactor, duplicate useless code
         private void dgNbPlayers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            dgNbPlayersSelectedGame.ItemsSource = null;
+
             if (dgNbPlayers.SelectedItem != null)
                 dgNbPlayersGame.ItemsSource = BGGPlays.AllPlaysByYear.Where(p => p.Result.Count == Int32.Parse(((KeyValuePair<string, int>)dgNbPlayers.SelectedItem).Key));
         }
@@ -331,7 +343,5 @@ namespace BGGStats
         {
             HyperLinkBehavior(e);
         }
-
-
     }
 }

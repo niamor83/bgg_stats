@@ -40,7 +40,11 @@
             </TabItem>
             <TabItem x:Name="tabStats" Header="All Players">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,-61">
-                    <DataGrid x:Name="lstStatsPlayers" HorizontalAlignment="Left" Height="675" Margin="10,46,0,0" VerticalAlignment="Top" Width="929" ItemsSource="{DynamicResource Stats}" SelectionChanged="ListView_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1107*"/>
+                        <ColumnDefinition Width="337*"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid x:Name="lstStatsPlayers" HorizontalAlignment="Left" Height="698" Margin="10,23,0,0" VerticalAlignment="Top" Width="929" ItemsSource="{DynamicResource Stats}" SelectionChanged="ListView_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Player" Width="200" Binding="{Binding Player.Nickname}"/>
                             <DataGridTextColumn Header="Total Plays" Width="80" Binding="{Binding NbPlays}"/>
@@ -64,12 +68,10 @@
                             <DataGridTextColumn Header="%" Width="50" Binding="{Binding NbUndefinedPercent, StringFormat=P0}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <TextBlock HorizontalAlignment="Left" Margin="15,13,0,0" TextWrapping="Wrap" Text="Filter by this player : " VerticalAlignment="Top"/>
-                    <TextBox x:Name="txtFilterByPlayer" HorizontalAlignment="Left" Height="23" Margin="129,12,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" KeyUp="txtFilterByPlayer_KeyUp"/>
-                    <Label Content="Total plays : " Margin="10,726,880,79"/>
-                    <Label x:Name="lblTotalPlays" Content="" Width="100" Margin="129,728,1215,79" FontWeight="Bold"/>
+                    <Label Content="Total plays : " Margin="10,726,543,79"/>
+                    <Label x:Name="lblTotalPlays" Content="" Width="100" Margin="129,728,878,79" FontWeight="Bold"/>
                     <chartingToolkit:Chart  Name="pieChart" Title="" 
-		VerticalAlignment="Top" Margin="944,23,10,0" Height="698">
+		VerticalAlignment="Top" Margin="944,23,10,0" Height="698" Grid.ColumnSpan="2">
                         <chartingToolkit:Chart.LegendStyle>
                             <Style TargetType="datavis:Legend">
                                 <Setter Property="Width" Value="0" />
@@ -239,6 +241,10 @@
         <ComboBox x:Name="cboYear" HorizontalAlignment="Left" Margin="1087,14,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cboYear_SelectionChanged"/>
         <TextBlock HorizontalAlignment="Left" Margin="1244,19,0,0" TextWrapping="Wrap" Text="Chart range by " VerticalAlignment="Top"/>
         <ComboBox x:Name="cboChartRange" HorizontalAlignment="Left" Margin="1340,14,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cboChartRange_SelectionChanged"/>
+        <TextBlock HorizontalAlignment="Left" Margin="959,45,0,0" TextWrapping="Wrap" Text="Filter by this player : " VerticalAlignment="Top"/>
+        <TextBox x:Name="txtFilterByPlayer" HorizontalAlignment="Left" Height="23" Margin="1087,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" KeyUp="txtFilterByPlayer_KeyUp"/>
+        <TextBlock HorizontalAlignment="Left" Margin="1214,46,0,0" TextWrapping="Wrap" Text="By number of players : " VerticalAlignment="Top"/>
+        <ComboBox x:Name="cboNbPlayers" HorizontalAlignment="Left" Margin="1340,45,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cboNbPlayers_SelectionChanged"/>
 
     </Grid>
 </Window>

@@ -184,46 +184,31 @@ namespace BGGStats.Model
             }
         }
 
-        public void FilterByYear(string year)
+
+        public void FilterByPlayerYearNbPlayers(string player, string year, string nbPlayers)
         {
-            //TODO : Refactor -> Duplicated CODE!
-            if (year == ALL_YEARS)
-            {
-                AllPlaysByYear = new ObservableCollection<Play>(AllPlays);
-            }
-            else
-            {
-                AllPlaysByYear = new ObservableCollection<Play>(AllPlays.Where(p => p.Date.Year.Equals(Int32.Parse(year)))); //Assume that there are only numbers!
-            }
+            AllPlaysByYear = new ObservableCollection<Play>(AllPlays);
+
+            if (year != ALL_YEARS)
+                AllPlaysByYear = new ObservableCollection<Play>(AllPlaysByYear.Where(p => p.Date.Year.Equals(Int32.Parse(year)))); //Assume that there are only numbers! for years...
+
+
+            if (!String.IsNullOrEmpty(player))
+                AllPlaysByYear = new ObservableCollection<Play>(AllPlaysByYear.Where(p => p.Result.Any(r => r.Player.Nickname == player)));
+
+
+            if (nbPlayers != null)
+                AllPlaysByYear = new ObservableCollection<Play>(AllPlaysByYear.Where(p => p.Result.Count == Int32.Parse(nbPlayers))); //Assume that there are only numbers! for number of players...
 
             CalculGamesAndLocationCounts();
-        }
 
-        public void FilterByPlayerAndYear(string player, string year)
-        {
-            if (String.IsNullOrEmpty(player))
-            {
-                FilterByYear(year);
-                return;
-            }
-               
-
-            //TODO : Refactor -> Duplicated CODE!
-            if (year == ALL_YEARS)
-            {
-                AllPlaysByYear = new ObservableCollection<Play>(AllPlays.Where(p => p.Result.Any(r => r.Player.Nickname.Equals(player, StringComparison.CurrentCultureIgnoreCase))));
-            }
-            else
-            {
-                AllPlaysByYear = new ObservableCollection<Play>(AllPlays.Where(p => p.Date.Year.Equals(Int32.Parse(year))).Where(p => p.Result.Any(r => r.Player.Nickname == player))); //Assume that there are only numbers! for years...
-            }
-            
         }
 
         private void CalculGamesAndLocationCounts()
         {
             LocationCounts.Clear();
             GameCounts.Clear();
+            NbPlayersCounts.Clear();
 
             foreach (var play in AllPlaysByYear)
             {
